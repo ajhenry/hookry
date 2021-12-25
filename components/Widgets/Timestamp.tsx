@@ -1,9 +1,10 @@
 import { Box, Heading } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 
 interface TimestampProps {}
 
 export const Timestamp: React.FC<TimestampProps> = () => {
+  const [time, setTime] = useState()
   return (
     <Box
       w="full"

@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { SSRProvider } from "@react-aria/ssr";
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
@@ -18,12 +19,15 @@ import {
   Link,
   NativeBaseProvider,
   Pressable,
+
   Switch,
   Text,
   useColorMode,
   VStack
 } from "native-base";
 import React from "react";
+import { StatusBar } from 'react-native';
+import { Notes } from "./components/Widgets/Notes";
 import NewProject from "./pages/NewProject";
 import Projects from "./pages/Projects";
 
@@ -188,6 +192,7 @@ const DefaultNavigator = () => {
       />
       <Stack.Screen name="Projects" component={Projects} />
       <Stack.Screen name="NewProject" component={NewProject} />
+      <Stack.Screen name="Notes" component={Notes} />
     </Stack.Navigator>
   );
 };
@@ -206,10 +211,13 @@ export const theme = extendTheme({ config });
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <NativeBaseProvider config={config}>
-        <DefaultNavigator />
-      </NativeBaseProvider>
-    </NavigationContainer>
+    <SSRProvider>
+      <NavigationContainer>
+        <NativeBaseProvider config={config}>
+          <StatusBar barStyle="light-content" />
+          <DefaultNavigator />
+        </NativeBaseProvider>
+      </NavigationContainer>
+    </SSRProvider>
   );
 }

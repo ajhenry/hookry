@@ -1,16 +1,22 @@
-import { Box, Button, Center, Heading, HStack } from "native-base";
+import { AntDesign } from "@expo/vector-icons";
+import { Box, Button, Heading, useDisclose } from "native-base";
 import React, { useState } from "react";
 import { useWindowDimensions } from "react-native";
 import { TabView } from "react-native-tab-view";
 import { TabBar } from "../components/NewProjectTabBar";
-import NewProjectCounters from "./NewProjectCounters";
+import NewProjectCounters from "./NewProjectBoard";
 import NewProjectDetails from "./NewProjectDetails";
 import NewProjectNotes from "./NewProjectNotes";
 
-const NewProject = () => {
+const NewProject = ({ navigation }: any) => {
   const layout = useWindowDimensions();
 
-  const [counters, setCounters] = useState<any>({})
+  const {
+    isOpen: widgetLibraryIsOpen,
+    onOpen: widgetLibraryOpen,
+    onClose: widgetLibraryClose,
+  } = useDisclose();
+  const [counters, setCounters] = useState<any>({});
   const [projectName, setProjectName] = useState<string>("");
   const [index, setIndex] = useState(1);
   const [routes] = useState([
@@ -18,6 +24,20 @@ const NewProject = () => {
     { key: "counters", title: "Counters" },
     { key: "notes", title: "Notes" },
   ]);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShadowVisible: false,
+      headerLeft: () => (
+        <AntDesign name="left" size={24} onPress={() => navigation.goBack()} />
+      ),
+      title: projectName.length > 0 ? projectName : "New Project",
+      headerRight: () =>
+        index > 0 ? (
+          <AntDesign name="plus" size={24} onPress={widgetLibraryOpen} />
+        ) : undefined,
+    });
+  }, [navigation, index]);
 
   const handleDetailsNext = () => {
     setIndex(1);
@@ -39,10 +59,9 @@ const NewProject = () => {
     }
   };
 
-  const onCountersChange = (counters:any) => {
-    console.log(counters)
-  }
-
+  const onCountersChange = (counters: any) => {
+    console.log(counters);
+  };
 
   const renderScene = ({ route }: any) => {
     switch (route.key) {
@@ -53,7 +72,14 @@ const NewProject = () => {
           />
         );
       case "counters":
-        return <NewProjectCounters onCountersChange={onCountersChange}/>;
+        return (
+          <NewProjectCounters
+            onCountersChange={onCountersChange}
+            widgetLibraryIsOpen={widgetLibraryIsOpen}
+            widgetLibraryOpen={widgetLibraryOpen}
+            widgetLibraryClose={widgetLibraryClose}
+          />
+        );
 
       case "notes":
         return <NewProjectNotes />;
@@ -64,9 +90,6 @@ const NewProject = () => {
 
   return (
     <Box h="100%" display="flex" safeAreaBottom bgColor="rgb(255,255,255)">
-      <Center>
-        <Heading mb="2">Create a new Project</Heading>
-      </Center>
       <Box flex="1">
         <TabView
           renderTabBar={(props) => (
@@ -107,58 +130,30 @@ const NewProject = () => {
           </Button>
         )}
         {index === 1 && (
-          <HStack display="flex">
-            <Button
-              onPress={handleCountersNext}
-              display="flex"
-              flex="1"
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="center"
-              h="16"
-              mx="2"
-              borderRadius="2xl"
-              p={4}
-              _stack={
-                {
-                  linearGradient: {
-                    colors: ["rgb(0, 75, 99)", "rgb(0,107,167)"],
-                    start: [1, 0],
-                    end: [0, 0],
-                  },
-                } as any
-              }
-            >
-              <Heading fontSize="lg" fontWeight="bold" color="black">
-                Add Notes
-              </Heading>
-            </Button>
-            <Button
-              onPress={handleFinish}
-              display="flex"
-              flex="1"
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="center"
-              h="16"
-              mx="2"
-              borderRadius="2xl"
-              p={4}
-              _stack={
-                {
-                  linearGradient: {
-                    colors: ["rgb(0, 75, 99)", "rgb(0,107,167)"],
-                    start: [1, 0],
-                    end: [0, 0],
-                  },
-                } as any
-              }
-            >
-              <Heading fontSize="lg" fontWeight="bold" color="black">
-                Finish
-              </Heading>
-            </Button>
-          </HStack>
+          <Button
+            onPress={handleFinish}
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="center"
+            h="16"
+            mx="4"
+            borderRadius="2xl"
+            p={4}
+            _stack={
+              {
+                linearGradient: {
+                  colors: ["rgb(0, 75, 99)", "rgb(0,107,167)"],
+                  start: [1, 0],
+                  end: [0, 0],
+                },
+              } as any
+            }
+          >
+            <Heading fontSize="lg" fontWeight="bold" color="black">
+              Finish
+            </Heading>
+          </Button>
         )}
         {index === 2 && (
           <Button

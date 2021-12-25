@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { Box, useDisclose } from "native-base";
 import React, { useState } from "react";
 import { Pressable } from "react-native";
@@ -5,6 +6,7 @@ import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator
 } from "react-native-draggable-flatlist";
+import { SettingsSheet } from "../components/SettingsSheet";
 import WidgetContainer, { WidgetItem } from "../components/Widget";
 import { WidgetLibrary } from "../components/WidgetLibrary";
 import { AddWidget } from "../components/Widgets/AddWidget";
@@ -13,15 +15,25 @@ import { HeadingRow } from "../components/Widgets/Heading";
 import { Timestamp } from "../components/Widgets/Timestamp";
 
 interface NewProjectCountersProps {
+  widgetLibraryIsOpen: boolean;
+  widgetLibraryOpen: () => void;
+  widgetLibraryClose: () => void;
   onCountersChange: (counters: any) => void;
 }
 
 const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
   onCountersChange,
+  widgetLibraryIsOpen,
+  widgetLibraryOpen,
+  widgetLibraryClose,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclose();
-
+  const router = useNavigation();
   const [data, setData] = useState<WidgetItem[]>([
+    {
+      id: "1245",
+      type: "timestamp",
+      data: {},
+    },
     {
       id: "2314",
       type: "large-counter",
@@ -30,12 +42,8 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
         id: "sdfio0",
         label: "Test Label",
         count: 45,
+        colors: ["#ff7ca6", "#fc9fa0", "#ef819e"],
       },
-    },
-    {
-      id: "1245",
-      type: "timestamp",
-      data: {},
     },
     {
       id: "2333",
@@ -56,22 +64,60 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
       },
     },
     {
-      id: "32",
-      type: "add-widget",
+      id: "sdoj",
+      type: "notes",
+      data: {
+        title: "This is a heading",
+        notes: "These are some notes that are really long",
+      },
     },
   ]);
 
-  const onSmallCounterAdd = () => {
-    console.log("clicked new add");
-  };
+  const { isOpen, onOpen, onClose } = useDisclose();
 
-  const onCounterPress = (rowId: string) => {
+  const onWidgetPress = (rowId: string) => {
     console.log("clicked on", rowId);
-  };
-
-  const onAddWidgetClick = () => {
+    setSelectedItem(data.find((widget) => widget.id === rowId)!);
     onOpen();
   };
+
+  const onWidgetAdd = (type: WidgetItem["type"]) => {
+    let data = {};
+
+    switch (type) {
+      case "large-counter":
+        data = {
+          id: Math.random().toString(36).substring(2),
+          label: "",
+          count: 50,
+        };
+    }
+
+    const newEntry = {
+      id: Math.random().toString(36).substring(2),
+      type,
+      data,
+    };
+    console.log("new entry", newEntry);
+
+    widgetLibraryClose();
+    setData((prev) => [...prev, newEntry]);
+    setSelectedItem(newEntry);
+    onOpen();
+  };
+
+  // Replaces the widget data when a user saves it
+  const onWidgetDataChange = (rowId: string, newData: any) => {
+    const indexToReplace = data.findIndex(({ id }) => id === rowId);
+    const oldEntry = data[indexToReplace];
+    const replacedData = Object.assign([], data, {
+      [indexToReplace]: { ...oldEntry, data: newData },
+    });
+    console.log(replacedData);
+    setData(replacedData);
+  };
+
+  const [selectedItem, setSelectedItem] = useState<WidgetItem>(data[0]);
 
   const renderItem = ({
     item,
@@ -91,7 +137,7 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
               item={item}
               drag={drag}
               isActive={isActive}
-              onPress={onCounterPress}
+              onPress={onWidgetPress}
             >
               <Counter {...item.data} size="large" />
             </WidgetContainer>
@@ -102,6 +148,7 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
               item={item}
               drag={drag}
               isActive={isActive}
+              onPress={onWidgetPress}
             >
               <Timestamp {...item.data} />
             </WidgetContainer>
@@ -112,6 +159,7 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
               item={item}
               drag={drag}
               isActive={isActive}
+              onPress={onWidgetPress}
             >
               <SmallCounterRow {...item} />
             </WidgetContainer>
@@ -122,7 +170,7 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
               item={item}
               drag={drag}
               isActive={isActive}
-              onPress={onAddWidgetClick}
+              onPress={onWidgetPress}
             >
               <AddWidget />
             </WidgetContainer>
@@ -133,7 +181,7 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
               item={item}
               drag={drag}
               isActive={isActive}
-              onPress={onAddWidgetClick}
+              onPress={onWidgetPress}
             >
               <HeadingRow {...item.data} />
             </WidgetContainer>
@@ -144,9 +192,9 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
               item={item}
               drag={drag}
               isActive={isActive}
-              onPress={onAddWidgetClick}
+              onPress={() => router.navigate("Notes" as any)}
             >
-              <HeadingRow {...item.data} />
+              <Box>For Notes</Box>
             </WidgetContainer>
           )}
         </Pressable>
@@ -166,7 +214,17 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
           />
         </Box>
       </Box>
-      <WidgetLibrary isOpen={isOpen} onClose={onClose} />
+      <WidgetLibrary
+        isOpen={widgetLibraryIsOpen}
+        onClose={widgetLibraryClose}
+        onWidgetSelect={onWidgetAdd}
+      />
+      <SettingsSheet
+        isOpen={isOpen}
+        onClose={onClose}
+        onDataChange={onWidgetDataChange}
+        {...selectedItem}
+      />
     </>
   );
 };
