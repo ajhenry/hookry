@@ -1,109 +1,53 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, useDisclose } from "native-base";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Pressable } from "react-native";
 import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator
 } from "react-native-draggable-flatlist";
 import { SettingsSheet } from "../components/SettingsSheet";
-import WidgetContainer, { WidgetItem } from "../components/Widget";
+import WidgetContainer, {
+  generateNewWidgetData
+} from "../components/Widget";
 import { WidgetLibrary } from "../components/WidgetLibrary";
-import { AddWidget } from "../components/Widgets/AddWidget";
 import { Counter, SmallCounterRow } from "../components/Widgets/Counter";
 import { HeadingRow } from "../components/Widgets/Heading";
 import { Timestamp } from "../components/Widgets/Timestamp";
+import { BoardContext, WidgetItem } from "../store";
 
 interface NewProjectCountersProps {
   widgetLibraryIsOpen: boolean;
   widgetLibraryOpen: () => void;
   widgetLibraryClose: () => void;
-  onCountersChange: (counters: any) => void;
 }
 
 const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
-  onCountersChange,
   widgetLibraryIsOpen,
   widgetLibraryOpen,
   widgetLibraryClose,
 }) => {
   const router = useNavigation();
-  const [data, setData] = useState<WidgetItem[]>([
-    {
-      id: "1245",
-      type: "timestamp",
-      data: {},
-    },
-    {
-      id: "2314",
-      type: "large-counter",
-      data: {
-        type: "large",
-        id: "sdfio0",
-        label: "Test Label",
-        count: 45,
-        colors: ["#ff7ca6", "#fc9fa0", "#ef819e"],
-      },
-    },
-    {
-      id: "2333",
-      type: "small-counter",
-      data: {
-        left: {
-          id: "asdf",
-          label: "Test Label",
-          count: 100,
-        },
-      },
-    },
-    {
-      id: "3i9459",
-      type: "heading",
-      data: {
-        label: "This is a heading",
-      },
-    },
-    {
-      id: "sdoj",
-      type: "notes",
-      data: {
-        title: "This is a heading",
-        notes: "These are some notes that are really long",
-      },
-    },
-  ]);
-
+  const { data, setData } = useContext(BoardContext);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const { isOpen, onOpen, onClose } = useDisclose();
 
   const onWidgetPress = (rowId: string) => {
-    console.log("clicked on", rowId);
-    setSelectedItem(data.find((widget) => widget.id === rowId)!);
-    onOpen();
+    setSelectedItemId(rowId);
   };
 
   const onWidgetAdd = (type: WidgetItem["type"]) => {
-    let data = {};
-
-    switch (type) {
-      case "large-counter":
-        data = {
-          id: Math.random().toString(36).substring(2),
-          label: "",
-          count: 50,
-        };
-    }
+    let data = generateNewWidgetData(type);
 
     const newEntry = {
       id: Math.random().toString(36).substring(2),
       type,
       data,
     };
-    console.log("new entry", newEntry);
 
     widgetLibraryClose();
     setData((prev) => [...prev, newEntry]);
-    setSelectedItem(newEntry);
-    onOpen();
+    setSelectedItemId(newEntry.id);
   };
 
   // Replaces the widget data when a user saves it
@@ -117,7 +61,15 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
     setData(replacedData);
   };
 
-  const [selectedItem, setSelectedItem] = useState<WidgetItem>(data[0]);
+  useEffect(() => {
+    if (!selectedItemId) return;
+    onOpen();
+  }, [selectedItemId]);
+
+  const onSettingsClose = () => {
+    setSelectedItemId(null);
+    onClose();
+  };
 
   const renderItem = ({
     item,
@@ -164,17 +116,6 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
               <SmallCounterRow {...item} />
             </WidgetContainer>
           )}
-          {item.type === "add-widget" && (
-            <WidgetContainer
-              size={1}
-              item={item}
-              drag={drag}
-              isActive={isActive}
-              onPress={onWidgetPress}
-            >
-              <AddWidget />
-            </WidgetContainer>
-          )}
           {item.type === "heading" && (
             <WidgetContainer
               size={1}
@@ -219,12 +160,14 @@ const NewProjectCounters: React.FC<NewProjectCountersProps> = ({
         onClose={widgetLibraryClose}
         onWidgetSelect={onWidgetAdd}
       />
-      <SettingsSheet
-        isOpen={isOpen}
-        onClose={onClose}
-        onDataChange={onWidgetDataChange}
-        {...selectedItem}
-      />
+      {selectedItemId && (
+        <SettingsSheet
+          isOpen={isOpen}
+          onClose={onSettingsClose}
+          onDataChange={onWidgetDataChange}
+          id={selectedItemId!}
+        />
+      )}
     </>
   );
 };

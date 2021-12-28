@@ -1,7 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import { Box, FormControl, Heading, Input } from "native-base";
 import React, { useEffect, useState } from "react";
-import { generateColorPalette } from "../../utils/colors";
 import { WidgetSettings } from "../SettingsSheet";
 
 interface CounterProps {
@@ -72,7 +71,9 @@ export const Counter: React.FC<CounterProps> = ({
       flex={1}
       bg={{
         linearGradient: {
-          ...generateColorPalette(colors),
+          colors: colors ?? ["#ffffff"],
+          start: [0, 0.6],
+          end: [0.8, 0.3],
         },
       }}
     >

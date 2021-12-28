@@ -1,27 +1,30 @@
 import { Button, Modal } from "native-base";
-import React, { useEffect, useState } from "react";
-import { WidgetItem } from "./Widget";
+import React, { useContext, useEffect, useState } from "react";
+import { BoardContext, WidgetItem } from "../store";
 import { CounterSettings, SmallCounterSettings } from "./Widgets/Counter";
+
 
 interface SettingsSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onDataChange: (id: string, data: any) => void;
+  id: string;
 }
 
 export interface WidgetSettings {
   onDataChange: (data: WidgetItem["data"]) => void;
 }
 
-export const SettingsSheet: React.FC<SettingsSheetProps & WidgetItem> = ({
+export const SettingsSheet: React.FC<SettingsSheetProps> = ({
   isOpen,
   onClose,
-  type,
-  data,
   id,
   onDataChange,
 }) => {
+  const { data: boardData, setData: setBoardData } = useContext(BoardContext);
   const [modifiedData, setModifiedData] = useState<WidgetItem["data"]>();
+  const selectedItem = boardData.find((item) => item.id === id);
+  const { data, type } = selectedItem!;
 
   useEffect(() => {
     setModifiedData(data);

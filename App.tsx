@@ -19,17 +19,17 @@ import {
   Link,
   NativeBaseProvider,
   Pressable,
-
   Switch,
   Text,
   useColorMode,
   VStack
 } from "native-base";
-import React from "react";
-import { StatusBar } from 'react-native';
+import React, { useState } from "react";
+import { StatusBar } from "react-native";
 import { Notes } from "./components/Widgets/Notes";
 import NewProject from "./pages/NewProject";
 import Projects from "./pages/Projects";
+import { initialProjectData, ProjectContext } from "./store";
 
 const Stack = createNativeStackNavigator();
 
@@ -210,12 +210,45 @@ const config = {
 export const theme = extendTheme({ config });
 
 export default function App() {
+  const [projectData, setProjectData] = useState(initialProjectData);
+
+  const getProject = (projectId: string) => projectData[projectId];
+
+  const getAllProjects = () =>
+    Object.keys(projectData).map((projectId) => projectData[projectId]);
+
+  function getWidgetData<T>(projectId: string, widgetId: string): T {
+    return projectData[projectId].board.data[widgetId] as unknown as T;
+  }
+
+  const getWidgetList = (projectId: string) => {
+    const keys = Object.keys(projectData[projectId].board.data).map(
+      (widgetId) => projectData[projectId].board.data[widgetId]
+    );
+    return keys;
+  };
+
+  function saveWidgetData<T>(projectId: string, widgetId: string, data: T) {
+    projectData[projectId].board.data[widgetId].data = data;
+  }
+
+  const value = {
+    projectData,
+    getProject,
+    getWidgetList,
+    getAllProjects,
+    getWidgetData,
+    saveWidgetData,
+  };
+
   return (
     <SSRProvider>
       <NavigationContainer>
         <NativeBaseProvider config={config}>
-          <StatusBar barStyle="light-content" />
-          <DefaultNavigator />
+          <ProjectContext.Provider value={value}>
+            <StatusBar barStyle="light-content" />
+            <DefaultNavigator />
+          </ProjectContext.Provider>
         </NativeBaseProvider>
       </NavigationContainer>
     </SSRProvider>
