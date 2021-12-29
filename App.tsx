@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SSRProvider } from "@react-aria/ssr";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
@@ -7,6 +8,7 @@ import {
 } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { cloneDeep } from "lodash";
 import {
   Box,
   Center,
@@ -24,12 +26,18 @@ import {
   useColorMode,
   VStack
 } from "native-base";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
-import { Notes } from "./components/Widgets/Notes";
+import { NotesSettingsPage } from "./components/Widgets/Notes";
+import Board from "./pages/Board";
 import NewProject from "./pages/NewProject";
 import Projects from "./pages/Projects";
-import { initialProjectData, ProjectContext } from "./store";
+import {
+  initialProjectData,
+  Project,
+  ProjectContext,
+  WidgetItem
+} from "./store";
 
 const Stack = createNativeStackNavigator();
 
@@ -163,14 +171,14 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
   );
 }
 
-const RootDrawer = () => {
+const RootDrawer = ({ navigation }: any) => {
   return (
     <Box flex={1}>
       <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
         <Drawer.Screen name="Home" component={Projects} />
-        <Drawer.Screen name="Outbox" component={Component} />
+        <Drawer.Screen name="Board" component={Board} />
         <Drawer.Screen name="Favorites" component={Component} />
         <Drawer.Screen name="Archive" component={Component} />
         <Drawer.Screen name="Trash" component={Component} />
@@ -192,7 +200,7 @@ const DefaultNavigator = () => {
       />
       <Stack.Screen name="Projects" component={Projects} />
       <Stack.Screen name="NewProject" component={NewProject} />
-      <Stack.Screen name="Notes" component={Notes} />
+      <Stack.Screen name="Notes" component={NotesSettingsPage} />
     </Stack.Navigator>
   );
 };
@@ -210,26 +218,90 @@ const config = {
 export const theme = extendTheme({ config });
 
 export default function App() {
+  const [fromStorage, setFromStorage] = useState<ProjectContext | null>(null);
   const [projectData, setProjectData] = useState(initialProjectData);
+
+  const getData = async () => {
+    try {
+      //await AsyncStorage.clear()
+      const value = await AsyncStorage.getItem("@storage_Key");
+      setFromStorage(value ? JSON.parse(value) : initialProjectData);
+    } catch (e) {
+      // error reading value
+      console.error("There was a bad error reading data");
+    }
+  };
+
+  const storeData = async (value: ProjectContext) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem("@storage_Key", jsonValue);
+    } catch (e) {
+      // saving error
+      console.error("There was a bad error reading data");
+    }
+  };
+
+  // Load from storage on load
+  useEffect(() => {
+    getData();
+  }, []);
+
+  // Let the app know we're ready to show data
+  useEffect(() => {
+    if (!fromStorage) return;
+    setProjectData(fromStorage);
+  }, [fromStorage]);
+
+  useEffect(() => {
+    if (!projectData) return;
+    storeData(projectData);
+  }, [projectData]);
 
   const getProject = (projectId: string) => projectData[projectId];
 
   const getAllProjects = () =>
     Object.keys(projectData).map((projectId) => projectData[projectId]);
 
-  function getWidgetData<T>(projectId: string, widgetId: string): T {
-    return projectData[projectId].board.data[widgetId] as unknown as T;
+  function getWidgetData(projectId: string, widgetId: string) {
+    return projectData[projectId].board.data.find(({ id }) => id === widgetId)!;
   }
 
   const getWidgetList = (projectId: string) => {
-    const keys = Object.keys(projectData[projectId].board.data).map(
-      (widgetId) => projectData[projectId].board.data[widgetId]
-    );
-    return keys;
+    return projectData[projectId].board.data ?? [];
   };
 
-  function saveWidgetData<T>(projectId: string, widgetId: string, data: T) {
-    projectData[projectId].board.data[widgetId].data = data;
+  const createProject = (data: Project) => {
+    setProjectData((prev) => ({ ...prev, [data.id]: data }));
+  };
+
+  function saveWidgetData(
+    projectId: string,
+    widgetId: string,
+    data: WidgetItem
+  ) {
+    const newProjectData = cloneDeep(projectData);
+
+    newProjectData[projectId].board.data.find(
+      ({ id }) => id === widgetId
+    )!.data = data;
+
+    setProjectData(newProjectData);
+  }
+
+  function addWidget(projectId: string, data: WidgetItem) {
+    console.log(data)
+    const newProjectData = cloneDeep(projectData);
+    const updatedWidgetData = [...newProjectData[projectId].board.data, data];
+    newProjectData[projectId].board.data = updatedWidgetData;
+    console.log(newProjectData)
+    setProjectData(newProjectData);
+  }
+
+  function setBoardWidgetList(projectId: string, data: WidgetItem[]) {
+    const newProjectData = cloneDeep(projectData);
+    newProjectData[projectId].board.data = data;
+    setProjectData(newProjectData);
   }
 
   const value = {
@@ -239,6 +311,9 @@ export default function App() {
     getAllProjects,
     getWidgetData,
     saveWidgetData,
+    createProject,
+    addWidget,
+    setBoardWidgetList,
   };
 
   return (

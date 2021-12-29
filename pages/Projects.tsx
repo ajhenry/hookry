@@ -1,16 +1,27 @@
 import { useNavigation } from "@react-navigation/native";
 import { Box, Button, ChevronRightIcon, Heading, Stack } from "native-base";
-import React from "react";
+import React, { useContext } from "react";
 import { Pressable } from "react-native";
+import { ProjectContext } from "../store";
 
 interface ProjectsProps {}
 
-const ProjectItem = ({ name }: { name: string }) => {
-  const router = useNavigation();
+const ProjectItem = ({
+  name,
+  projectId,
+  navigation,
+}: {
+  name: string;
+  projectId: string;
+  navigation: any;
+}) => {
+  console.log(projectId);
   return (
     <Pressable
       onPress={() => {
-        router.navigate("NewProject" as any);
+        navigation.navigate("Board", {
+          projectId,
+        });
       }}
     >
       <Box
@@ -78,7 +89,16 @@ const CreateProjectItem = () => {
   );
 };
 
-const Projects: React.FC<ProjectsProps> = () => {
+const Projects: React.FC<ProjectsProps> = ({ navigation }: any) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShadowVisible: false,
+      title: "Projects",
+    });
+  }, [navigation]);
+
+  const { getAllProjects } = useContext(ProjectContext);
+
   return (
     <Box
       height="100%"
@@ -90,13 +110,16 @@ const Projects: React.FC<ProjectsProps> = () => {
       bgColor="rgb(255,255,255)"
       safeAreaBottom
     >
-      <Heading fontSize="4xl" mt="4" fontWeight="bold" color="black">
-        Projects
-      </Heading>
       <Box flex="1" flexDir="column" width="100%">
         <Stack space="4" mt="4">
-          <ProjectItem name="My First Project" />
-          <ProjectItem name="My First Project" />
+          {getAllProjects().map((project) => (
+            <ProjectItem
+              name={project.name}
+              key={project.id}
+              projectId={project.id}
+              navigation={navigation}
+            />
+          ))}
         </Stack>
       </Box>
       <Box flexDir="column" width="100%">

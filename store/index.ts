@@ -18,8 +18,8 @@ export interface SmallCounter {
   };
 }
 
-export interface Timestamp {
-  type: "timestamp";
+export interface Timer {
+  type: "timer";
   data: { total: number };
 }
 
@@ -51,9 +51,7 @@ export type WidgetItem = BaseWidgetItem &
 
 export interface Board {
   id: string;
-  data: {
-    [widgetId: string]: WidgetItem;
-  };
+  data: WidgetItem[];
 }
 
 export interface Project {
@@ -76,8 +74,15 @@ export const ProjectContext = createContext<{
   getProject: (projectId: string) => Project;
   getAllProjects: () => Project[];
   getWidgetList: (projectId: string) => WidgetItem[];
-  getWidgetData: <T>(projectId: string, widgetId: string) => T;
-  saveWidgetData: <T>(projectId: string, widgetId: string, data: T) => void;
+  getWidgetData: (projectId: string, widgetId: string) => WidgetItem;
+  saveWidgetData: (
+    projectId: string,
+    widgetId: string,
+    data: WidgetItem
+  ) => void;
+  createProject: (data: Project) => void;
+  addWidget: (projectId: string, data: WidgetItem) => void;
+  setBoardWidgetList: (projectId: string, data: WidgetItem[]) => void;
 }>({
   projectData: initialProjectData,
   getProject: (projectId: string) => ({} as Project),
@@ -85,6 +90,9 @@ export const ProjectContext = createContext<{
   getWidgetList: (projectId: string) => [],
   getWidgetData: <T>(projectId: string, widgetId: string) => ({} as T),
   saveWidgetData: <T>(projectId: string, widgetId: string, data: T) => {},
+  createProject: (data: Project) => {},
+  addWidget: (projectId: string, data: WidgetItem) => {},
+  setBoardWidgetList: (projectId: string, data: WidgetItem[]) => {},
 });
 
 export const BoardContext = createContext<{

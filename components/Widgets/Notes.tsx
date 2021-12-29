@@ -1,22 +1,74 @@
-import { Flex, Input, KeyboardAvoidingView, ScrollView } from "native-base";
-import React, { useRef } from "react";
-import { Dimensions, Platform } from "react-native";
+import {
+  Box,
+  Flex,
+  Heading,
+  Input,
+  KeyboardAvoidingView,
+  ScrollView
+} from "native-base";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Dimensions, Platform, useWindowDimensions } from "react-native";
+import { RenderItemParams } from "react-native-draggable-flatlist";
 import { RichEditor, RichToolbar } from "react-native-pell-rich-editor";
+import RenderHtml from "react-native-render-html";
+import { ProjectContext, WidgetItem } from "../../store";
+import { generateRandom } from "../../utils/random";
+import WidgetContainer from "../Widget";
 
 interface NotesProps {
   title?: string;
   notes: string;
 }
 
-export const Notes: React.FC<NotesProps> = ({ title, notes }) => {
+interface NotesWidgetProps {
+  widgetId: string;
+  projectId: string;
+  disablePresses?: string;
+  defaultData?: WidgetItem["data"];
+  navigation: any;
+  route: any;
+}
+
+export const notesLibraryDefaults = {
+  notes: "These are just some Notes",
+  title: "Just a title",
+};
+
+export const newNotesDefaults = {
+  notes: "",
+  title: undefined,
+  id: generateRandom(),
+};
+
+export const NotesSettingsPage: React.FC<
+  NotesWidgetProps & { isOpen: boolean; onClose: () => void }
+> = ({ route }) => {
+  const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
+  const { projectId, widgetId } = route.params;
+  const { data } = getWidgetData(projectId, widgetId);
+  const { title, notes } = data;
+  const [modifiedTitle, setModifiedTitle] = useState(title);
+  const [modifiedNotes, setModifiedNotes] = useState(notes);
   let richText = useRef(null);
   let scrollRef = useRef(null);
   const { height } = Dimensions.get("window");
 
+  const saveData = () => {
+    console.log("called saved data");
+    saveWidgetData(projectId, widgetId, {
+      ...data,
+      notes: modifiedNotes,
+      title: modifiedTitle,
+    });
+  };
+
+  useEffect(() => {
+    saveData();
+  }, [modifiedNotes, modifiedTitle]);
+
   const handleCursor = (scrollY: number) => {
     console.log(scrollY);
     const ref = scrollRef.current as any;
-    //if (height / 3 > scrollY) return;
     ref.scrollTo({ y: scrollY - 30, duration: 100, animated: true });
   };
 
@@ -36,9 +88,9 @@ export const Notes: React.FC<NotesProps> = ({ title, notes }) => {
               borderColor: "transparent",
             }}
             placeholder="Title your work"
-          >
-            This is a title
-          </Input>
+            value={modifiedTitle}
+            onChangeText={setModifiedTitle}
+          />
         </Flex>
         <Flex w="full">
           <RichToolbar editor={richText} />
@@ -50,6 +102,8 @@ export const Notes: React.FC<NotesProps> = ({ title, notes }) => {
               display: "flex",
               flex: 1,
             }}
+            onChange={setModifiedNotes}
+            initialContentHTML={notes}
             useContainer
             onCursorPosition={handleCursor}
             placeholder="Write to your heart's content"
@@ -57,5 +111,63 @@ export const Notes: React.FC<NotesProps> = ({ title, notes }) => {
         </ScrollView>
       </Flex>
     </KeyboardAvoidingView>
+  );
+};
+
+export const NotesWidget: React.FC<
+  NotesWidgetProps & Omit<RenderItemParams<WidgetItem>, "item">
+> = ({ widgetId, projectId, drag, isActive, navigation }) => {
+  const { getWidgetData, saveWidgetData } = useContext(ProjectContext);
+  const { width } = useWindowDimensions();
+  const { data } = getWidgetData(projectId, widgetId);
+  const { notes, title } = data;
+
+  const source = {
+    html: notes.length !== 0 ? notes : "<div>This note is blank 😞</div>",
+  };
+
+  const handlePress = () => {
+    navigation.navigate("Notes", {
+      projectId,
+      widgetId,
+    });
+  };
+
+  return (
+    <WidgetContainer
+      size={1}
+      drag={drag}
+      isActive={isActive}
+      onPress={handlePress}
+    >
+      <Box p={2}>
+        <Heading>{title}</Heading>
+        <RenderHtml contentWidth={width} source={source} />
+      </Box>
+    </WidgetContainer>
+  );
+};
+
+export const NotesLibraryItem = ({ notes, title }: WidgetItem["data"]) => {
+  const { width } = Dimensions.get("window");
+
+  const source = {
+    html: notes.length !== 0 ? notes : "<div>This note is blank</div>",
+  };
+
+  return (
+    <Box
+      display="flex"
+      flexDir="column"
+      w={width - 16}
+      m={2}
+      borderRadius="2xl"
+      overflow="hidden"
+    >
+      <Box p={2}>
+        <Heading>{title}</Heading>
+        <RenderHtml contentWidth={width} source={source} />
+      </Box>
+    </Box>
   );
 };

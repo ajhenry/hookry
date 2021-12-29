@@ -2,11 +2,16 @@ import { Actionsheet, Box, Flex, Heading, ScrollView } from "native-base";
 import React from "react";
 import { Pressable } from "react-native";
 import { WidgetItem } from "../store";
-import { generateColorPalette } from "../utils/colors";
-import { Counter, SmallCounterRow } from "./Widgets/Counter";
-import { Notes } from "./Widgets/Notes";
-import { Timestamp } from "./Widgets/Timestamp";
-
+import {
+  largeCounterLibraryDefaults,
+  LargeCounterLibraryItem
+} from "./Widgets/LargeCounter";
+import { notesLibraryDefaults, NotesLibraryItem } from "./Widgets/Notes";
+import {
+  smallCounterLibraryDefaults,
+  SmallCounterLibraryItem
+} from "./Widgets/SmallCounter";
+import { timerLibraryDefaults, TimerLibraryItem } from "./Widgets/Timestamp";
 
 interface WidgetLibraryProps {
   isOpen: boolean;
@@ -27,39 +32,6 @@ const WidgetLibraryRowItem = ({ label, children, onPress }: any) => {
   );
 };
 
-const libraryData = {
-  largeCounter: {
-    count: 29,
-    label: "Global Counter",
-    colors: generateColorPalette(),
-    id: "large-counter",
-    size: "large" as const,
-  },
-  smallCounter: {
-    data: {
-      left: {
-        id: "asdf",
-        label: "Small Label",
-        count: 100,
-        colors: generateColorPalette(),
-      },
-      right: {
-        id: "asdf",
-        label: "Test Label",
-        count: 100,
-        colors: generateColorPalette(),
-      },
-    },
-  },
-  timestamp: {
-    total: 32948234,
-  },
-  notes: {
-    notes: "Add some notes here",
-    title: "",
-  },
-};
-
 export const WidgetLibrary: React.FC<WidgetLibraryProps> = ({
   isOpen,
   onClose,
@@ -67,7 +39,7 @@ export const WidgetLibrary: React.FC<WidgetLibraryProps> = ({
 }) => {
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
-      <Actionsheet.Content>
+      <Actionsheet.Content bgColor="white">
         <Box w="100%" h={60} px={4} justifyContent="center" alignItems="center">
           <Heading>Widgets</Heading>
         </Box>
@@ -77,25 +49,25 @@ export const WidgetLibrary: React.FC<WidgetLibraryProps> = ({
             label="Large Counter"
             onPress={() => onWidgetSelect("large-counter")}
           >
-            <Counter {...libraryData.largeCounter} />
+            <LargeCounterLibraryItem {...largeCounterLibraryDefaults} />
           </WidgetLibraryRowItem>
           <WidgetLibraryRowItem
             label="Small Counters"
             onPress={() => onWidgetSelect("small-counter")}
           >
-            <SmallCounterRow {...libraryData.smallCounter} />
+            <SmallCounterLibraryItem {...smallCounterLibraryDefaults} />
           </WidgetLibraryRowItem>
           <WidgetLibraryRowItem
-            label="Timestamp"
-            onPress={() => onWidgetSelect("timestamp")}
+            label="Timer"
+            onPress={() => onWidgetSelect("timer")}
           >
-            <Timestamp {...libraryData.timestamp} />
+            <TimerLibraryItem {...timerLibraryDefaults} />
           </WidgetLibraryRowItem>
           <WidgetLibraryRowItem
             label="Notes"
             onPress={() => onWidgetSelect("notes")}
           >
-            <Notes {...libraryData.notes} />
+            <NotesLibraryItem {...notesLibraryDefaults} />
           </WidgetLibraryRowItem>
         </ScrollView>
       </Actionsheet.Content>

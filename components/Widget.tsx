@@ -1,57 +1,45 @@
+import { AntDesign } from "@expo/vector-icons";
 import { Box, Pressable } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { WidgetItem } from "../store";
-import { generateColorPalette } from "../utils/colors";
 
 export interface WidgetContainerProps {
   size: number;
-  onPress?: (id: string) => void;
+  onPress?: () => void;
 }
 
-
-export const generateNewWidgetData = (
-  type: WidgetItem["type"]
-): WidgetItem["data"] => {
-  switch (type) {
-    case "large-counter":
-      return {
-        id: Math.random().toString(36).substring(2),
-        label: "",
-        count: 50,
-        colors: generateColorPalette(),
-      };
-    case "small-counter":
-      return {
-        left: {
-          id: Math.random().toString(36).substring(2),
-          label: "",
-          count: 50,
-          colors: generateColorPalette(),
-        },
-        right: {
-          id: Math.random().toString(36).substring(2),
-          label: "",
-          count: 50,
-          colors: generateColorPalette(),
-        },
-      };
-  }
-};
-
 const WidgetContainer: React.FC<
-  WidgetContainerProps & RenderItemParams<WidgetItem>
-> = ({ size, children, item, drag, isActive, onPress }) => {
+  WidgetContainerProps & Omit<RenderItemParams<WidgetItem>, "item">
+> = ({ size, children, drag, isActive, onPress }) => {
   const { width } = Dimensions.get("window");
+
+  const [showDelete, setShowDelete] = useState(false);
+
+  const onLongPress = () => {
+    setShowDelete(true);
+
+    drag();
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowDelete(false);
+    }, 3000);
+    if (!setShowDelete) {
+      () => clearTimeout(timeout);
+    }
+    return () => clearTimeout(timeout);
+  }, [showDelete]);
 
   return (
     <Pressable
       disabled={isActive}
       onPress={() => {
-        onPress?.(item.id);
+        onPress?.();
       }}
-      onLongPress={drag}
+      onLongPress={onLongPress}
     >
       <Box
         display="flex"
@@ -59,9 +47,22 @@ const WidgetContainer: React.FC<
         w={width / size - 16}
         m={2}
         borderRadius="2xl"
-        overflow="hidden"
       >
         {children}
+        {showDelete && (
+          <Pressable onPress={() => console.log("pressed remove")}>
+            <Box
+              position="absolute"
+              borderRadius="full"
+              bgColor="rgb(243, 32, 19)"
+              p={2}
+              mt="-2"
+              right={0}
+            >
+              <AntDesign name="close" size={32} color="white" />
+            </Box>
+          </Pressable> 
+        )}
       </Box>
     </Pressable>
   );
