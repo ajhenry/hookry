@@ -145,7 +145,6 @@ export const TimerWidget: React.FC<
   const { h, m, s } = secondsToTime(runningTotal);
 
   const handlePress = () => {
-    console.log("Pressed it");
     setPaused((v) => !v);
   };
 
@@ -156,6 +155,8 @@ export const TimerWidget: React.FC<
         drag={drag}
         isActive={isActive}
         onPress={handlePress}
+        projectId={projectId}
+        widgetId={widgetId}
       >
         <Box
           w="full"
@@ -165,8 +166,8 @@ export const TimerWidget: React.FC<
           justifyContent="center"
           alignItems="center"
         >
-          <Heading mr={2}>
-            {h} hrs {m} mins {s} secs
+          <Heading mr={2} color={paused? "rgba(0, 0, 0, 0.5)": "black"}>
+            {h > 0 && `${h} hrs`} {m} mins {s} secs
           </Heading>
         </Box>
       </WidgetContainer>
@@ -195,7 +196,7 @@ export const TimerLibraryItem = ({ total }: WidgetItem["data"]) => {
         alignItems="center"
       >
         <Heading mr={2}>
-          {h} hrs {m} mins {s} secs
+          {h > 0 && `${h} hrs`} {m} mins {s} secs
         </Heading>
       </Box>
     </Flex>

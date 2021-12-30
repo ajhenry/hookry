@@ -11,7 +11,7 @@ import {
   smallCounterLibraryDefaults,
   SmallCounterLibraryItem
 } from "./Widgets/SmallCounter";
-import { timerLibraryDefaults, TimerLibraryItem } from "./Widgets/Timestamp";
+import { timerLibraryDefaults, TimerLibraryItem } from "./Widgets/Timer";
 
 interface WidgetLibraryProps {
   isOpen: boolean;

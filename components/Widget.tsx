@@ -1,19 +1,22 @@
 import { AntDesign } from "@expo/vector-icons";
 import { Box, Pressable } from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
-import { WidgetItem } from "../store";
+import { ProjectContext, WidgetItem } from "../store";
 
 export interface WidgetContainerProps {
   size: number;
   onPress?: () => void;
+  projectId: string;
+  widgetId: string;
 }
 
 const WidgetContainer: React.FC<
   WidgetContainerProps & Omit<RenderItemParams<WidgetItem>, "item">
-> = ({ size, children, drag, isActive, onPress }) => {
+> = ({ size, children, drag, isActive, onPress, projectId, widgetId }) => {
   const { width } = Dimensions.get("window");
+  const { removeWidget } = useContext(ProjectContext);
 
   const [showDelete, setShowDelete] = useState(false);
 
@@ -33,6 +36,10 @@ const WidgetContainer: React.FC<
     return () => clearTimeout(timeout);
   }, [showDelete]);
 
+  const onPressDelete = () => {
+    removeWidget(projectId, widgetId);
+  };
+
   return (
     <Pressable
       disabled={isActive}
@@ -41,28 +48,28 @@ const WidgetContainer: React.FC<
       }}
       onLongPress={onLongPress}
     >
+      {showDelete && (
+        <Pressable onPress={onPressDelete} zIndex={100}>
+          <Box
+            position="absolute"
+            borderRadius="full"
+            bgColor="rgb(243, 32, 19)"
+            p={2}
+            right={0}
+          >
+            <AntDesign name="close" size={20} color="white" />
+          </Box>
+        </Pressable>
+      )}
       <Box
         display="flex"
         flexDir="column"
         w={width / size - 16}
         m={2}
+        ml={2}
         borderRadius="2xl"
       >
         {children}
-        {showDelete && (
-          <Pressable onPress={() => console.log("pressed remove")}>
-            <Box
-              position="absolute"
-              borderRadius="full"
-              bgColor="rgb(243, 32, 19)"
-              p={2}
-              mt="-2"
-              right={0}
-            >
-              <AntDesign name="close" size={32} color="white" />
-            </Box>
-          </Pressable> 
-        )}
       </Box>
     </Pressable>
   );

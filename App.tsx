@@ -267,6 +267,15 @@ export default function App() {
     return projectData[projectId].board.data.find(({ id }) => id === widgetId)!;
   }
 
+  function removeWidget(projectId: string, widgetId: string) {
+    const idToRemove = projectData[projectId].board.data.findIndex(
+      ({ id }) => id === widgetId
+    )!;
+    const newProjectData = cloneDeep(projectData);
+    newProjectData[projectId].board.data.splice(idToRemove, 1);
+    setProjectData(newProjectData);
+  }
+
   const getWidgetList = (projectId: string) => {
     return projectData[projectId].board.data ?? [];
   };
@@ -290,11 +299,9 @@ export default function App() {
   }
 
   function addWidget(projectId: string, data: WidgetItem) {
-    console.log(data)
     const newProjectData = cloneDeep(projectData);
     const updatedWidgetData = [...newProjectData[projectId].board.data, data];
     newProjectData[projectId].board.data = updatedWidgetData;
-    console.log(newProjectData)
     setProjectData(newProjectData);
   }
 
@@ -314,6 +321,7 @@ export default function App() {
     createProject,
     addWidget,
     setBoardWidgetList,
+    removeWidget
   };
 
   return (
@@ -321,7 +329,7 @@ export default function App() {
       <NavigationContainer>
         <NativeBaseProvider config={config}>
           <ProjectContext.Provider value={value}>
-            <StatusBar barStyle="light-content" />
+            <StatusBar barStyle="dark-content" />
             <DefaultNavigator />
           </ProjectContext.Provider>
         </NativeBaseProvider>

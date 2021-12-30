@@ -1,7 +1,7 @@
 import { newLargeCounterDefaults } from "../components/Widgets/LargeCounter";
 import { newNotesDefaults } from "../components/Widgets/Notes";
 import { newSmallCounterDefaults } from "../components/Widgets/SmallCounter";
-import { newTimerDefaults } from "../components/Widgets/Timestamp";
+import { newTimerDefaults } from "../components/Widgets/Timer";
 import { WidgetItem } from "../store";
 
 export const generateNewWidgetData = (

@@ -1,20 +1,17 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { Box, Flex, Heading, useDisclose } from "native-base";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Pressable } from "react-native";
 import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator
 } from "react-native-draggable-flatlist";
-import WidgetContainer from "../components/Widget";
 import { WidgetLibrary } from "../components/WidgetLibrary";
-import { HeadingRow } from "../components/Widgets/Heading";
 import { LargeCounterWidget } from "../components/Widgets/LargeCounter";
 import { NotesWidget } from "../components/Widgets/Notes";
 import { SmallCounterWidget } from "../components/Widgets/SmallCounter";
-import { TimerWidget } from "../components/Widgets/Timestamp";
-import { BoardContext, ProjectContext, WidgetItem } from "../store";
+import { TimerWidget } from "../components/Widgets/Timer";
+import { ProjectContext, WidgetItem } from "../store";
 import { generateNewWidgetData } from "../utils/defaults";
 import { generateRandom } from "../utils/random";
 
@@ -31,19 +28,9 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
     onClose: widgetLibraryOnClose,
   } = useDisclose();
 
-  const {
-    getWidgetList,
-    getProject,
-    projectData,
-    addWidget,
-    setBoardWidgetList,
-  } = useContext(ProjectContext);
+  const { getWidgetList, getProject, addWidget, setBoardWidgetList } =
+    useContext(ProjectContext);
   const { name } = getProject(projectId);
-
-  const router = useNavigation();
-  const { data, setData } = useContext(BoardContext);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclose();
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -60,10 +47,6 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
       title: name,
     });
   }, [navigation, name]);
-
-  const onWidgetPress = (rowId: string) => {
-    setSelectedItemId(rowId);
-  };
 
   const onWidgetAdd = (type: WidgetItem["type"]) => {
     let data = generateNewWidgetData(type);
@@ -103,17 +86,6 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
               projectId={projectId}
               {...props}
             />
-          )}
-          {item.type === "heading" && (
-            <WidgetContainer
-              size={1}
-              item={item}
-              drag={drag}
-              isActive={isActive}
-              onPress={onWidgetPress}
-            >
-              <HeadingRow {...item.data} />
-            </WidgetContainer>
           )}
           {item.type === "notes" && (
             <NotesWidget

@@ -26,7 +26,7 @@ interface NotesWidgetProps {
   disablePresses?: string;
   defaultData?: WidgetItem["data"];
   navigation: any;
-  route: any;
+  route?: any;
 }
 
 export const notesLibraryDefaults = {
@@ -139,6 +139,8 @@ export const NotesWidget: React.FC<
       drag={drag}
       isActive={isActive}
       onPress={handlePress}
+      projectId={projectId}
+      widgetId={widgetId}
     >
       <Box p={2}>
         <Heading>{title}</Heading>

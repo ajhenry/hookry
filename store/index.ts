@@ -47,7 +47,7 @@ interface BaseWidgetItem {
 }
 
 export type WidgetItem = BaseWidgetItem &
-  (LargeCounter | SmallCounter | Timestamp | Heading | Notes);
+  (LargeCounter | SmallCounter | Timer | Heading | Notes);
 
 export interface Board {
   id: string;
@@ -83,16 +83,18 @@ export const ProjectContext = createContext<{
   createProject: (data: Project) => void;
   addWidget: (projectId: string, data: WidgetItem) => void;
   setBoardWidgetList: (projectId: string, data: WidgetItem[]) => void;
+  removeWidget: (projectId: string, widgetId: string) => void;
 }>({
   projectData: initialProjectData,
   getProject: (projectId: string) => ({} as Project),
   getAllProjects: () => [],
   getWidgetList: (projectId: string) => [],
-  getWidgetData: <T>(projectId: string, widgetId: string) => ({} as T),
-  saveWidgetData: <T>(projectId: string, widgetId: string, data: T) => {},
+  getWidgetData: (projectId: string, widgetId: string) => ({}),
+  saveWidgetData: (projectId: string, widgetId: string, data: WidgetItem) => {},
   createProject: (data: Project) => {},
   addWidget: (projectId: string, data: WidgetItem) => {},
   setBoardWidgetList: (projectId: string, data: WidgetItem[]) => {},
+  removeWidget: (projectId: string, widgetId: string) => ({}),
 });
 
 export const BoardContext = createContext<{

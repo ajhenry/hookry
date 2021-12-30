@@ -1,21 +1,13 @@
 import { AntDesign } from "@expo/vector-icons";
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  Heading,
-  Input,
-  Modal,
-  useDisclose
-} from "native-base";
-import React, { useContext, useEffect, useState } from "react";
+import { Box, Flex, Heading, useDisclose } from "native-base";
+import React, { useContext } from "react";
 import { Pressable } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { ProjectContext, WidgetItem } from "../../store";
 import { generateColorPalette } from "../../utils/colors";
 import { generateRandom } from "../../utils/random";
 import WidgetContainer from "../Widget";
+import { CounterSettingsSheet } from "./CounterSettingsModal";
 
 interface LargeCounterWidgetProps {
   widgetId: string;
@@ -43,66 +35,25 @@ export const LargeCounterSettingsSheet: React.FC<
 > = ({ projectId, widgetId, isOpen, onClose }) => {
   const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
   const { data } = getWidgetData(projectId, widgetId);
-  const { label } = data;
-  const [counterLabel, setCounterLabel] = useState(label);
+  const { label, count } = data;
 
-  useEffect(() => {
-    setCounterLabel(label);
-  }, [label]);
-
-  const onSaveClick = () => {
+  const onSaveClick = (val: { count: number; label: string }) => {
     saveWidgetData(projectId, widgetId, {
       ...data,
-      label: counterLabel,
+      label: val.label,
+      count: val.count,
     });
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} avoidKeyboard size="xl">
-      <Modal.Content bgColor="rgb(255, 255, 255)">
-        <Modal.CloseButton />
-        <Modal.Header borderBottomColor="transparent">
-          Edit Large Counter
-        </Modal.Header>
-        <Modal.Body
-          borderWidth={0}
-          bgColor="rgb(255, 255, 255)"
-          px="4"
-          minH="40"
-        >
-          <FormControl mt="3">
-            <FormControl.Label>Counter Label</FormControl.Label>
-            <Box
-              borderColor={"transparent"}
-              bgColor={"rgb(239,239,239)"}
-              borderRadius="2xl"
-              paddingX={2}
-            >
-              <Input
-                borderColor="transparent"
-                bgColor="transparent"
-                borderWidth={0}
-                fontSize="lg"
-                h={10}
-                onChangeText={(text) => setCounterLabel(text)}
-                autoCorrect={false}
-                value={counterLabel}
-              />
-            </Box>
-          </FormControl>
-        </Modal.Body>
-        <Modal.Footer
-          bgColor="rgb(255, 255, 255)"
-          display="flex"
-          justifyContent="center"
-        >
-          <Button px="12" borderRadius="2xl" onPress={onSaveClick}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+    <CounterSettingsSheet
+      onClose={onClose}
+      isOpen={isOpen}
+      label={label}
+      count={count}
+      onSave={onSaveClick}
+    />
   );
 };
 
@@ -116,6 +67,10 @@ export const LargeCounterWidget: React.FC<
   const { colors, count, label } = data;
 
   const handleMinusPress = () => {
+    if (count - 1 < 0) {
+      return;
+    }
+
     saveWidgetData(projectId, widgetId, {
       ...data,
       count: count - 1,
@@ -134,6 +89,8 @@ export const LargeCounterWidget: React.FC<
     onOpen();
   };
 
+  const handleDoublePress = () => {};
+
   return (
     <>
       <WidgetContainer
@@ -141,6 +98,8 @@ export const LargeCounterWidget: React.FC<
         drag={drag}
         isActive={isActive}
         onPress={handlePress}
+        projectId={projectId}
+        widgetId={widgetId}
       >
         <Box
           h={32}
