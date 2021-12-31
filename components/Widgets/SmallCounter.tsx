@@ -53,7 +53,6 @@ export const SmallCounterSettingsSheet: React.FC<
   const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
   const { data } = getWidgetData(projectId, widgetId);
   const { left, right } = data;
-  console.log(dir);
 
   const onSaveClick = (val: { count: number; label: string }) => {
     saveWidgetData(projectId, widgetId, {

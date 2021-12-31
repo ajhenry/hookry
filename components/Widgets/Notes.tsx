@@ -51,10 +51,8 @@ export const NotesSettingsPage: React.FC<
   const [modifiedNotes, setModifiedNotes] = useState(notes);
   let richText = useRef(null);
   let scrollRef = useRef(null);
-  const { height } = Dimensions.get("window");
 
   const saveData = () => {
-    console.log("called saved data");
     saveWidgetData(projectId, widgetId, {
       ...data,
       notes: modifiedNotes,
@@ -67,7 +65,6 @@ export const NotesSettingsPage: React.FC<
   }, [modifiedNotes, modifiedTitle]);
 
   const handleCursor = (scrollY: number) => {
-    console.log(scrollY);
     const ref = scrollRef.current as any;
     ref.scrollTo({ y: scrollY - 30, duration: 100, animated: true });
   };

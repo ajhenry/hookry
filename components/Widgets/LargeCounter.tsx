@@ -85,7 +85,6 @@ export const LargeCounterWidget: React.FC<
   };
 
   const handlePress = () => {
-    console.log("Pressed it");
     onOpen();
   };
 

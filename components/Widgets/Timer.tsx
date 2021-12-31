@@ -125,7 +125,6 @@ export const TimerWidget: React.FC<
       total,
     });
   };
-  console.log("total", total);
 
   useEffect(() => {
     const interval = setInterval(() => {

@@ -67,7 +67,6 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
       <ScaleDecorator>
         <Pressable
           disabled={isActive}
-          onPress={() => console.log("Pressed outer")}
           onLongPress={drag}
         >
           {item.type === "large-counter" && (

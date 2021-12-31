@@ -15,7 +15,6 @@ const ProjectItem = ({
   projectId: string;
   navigation: any;
 }) => {
-  console.log(projectId);
   return (
     <Pressable
       onPress={() => {

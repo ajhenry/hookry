@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "jellybean",
-    "slug": "jellybean",
+    "name": "Hookry",
+    "slug": "hookry",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,7 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.ajhenry.jellybean"
+      "bundleIdentifier": "com.ajhenry.hookry"
     },
     "android": {
       "adaptiveIcon": {
