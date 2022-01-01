@@ -2,24 +2,19 @@ import { useNavigation } from "@react-navigation/native";
 import { Box, Button, ChevronRightIcon, Heading, Stack } from "native-base";
 import React, { useContext } from "react";
 import { Pressable } from "react-native";
-import { ProjectContext } from "../store";
+import { Project, ProjectContext } from "../store";
+import { calculateTotalTime } from "../utils/time";
+import { HomeProps } from "./DefaultNavigator";
 
-interface ProjectsProps {}
-
-const ProjectItem = ({
-  name,
-  projectId,
+const ProjectItem: React.FC<HomeProps & { project: Project }> = ({
+  project,
   navigation,
-}: {
-  name: string;
-  projectId: string;
-  navigation: any;
 }) => {
   return (
     <Pressable
       onPress={() => {
         navigation.navigate("Board", {
-          projectId,
+          projectId: project.id,
         });
       }}
     >
@@ -41,10 +36,10 @@ const ProjectItem = ({
         <Box bg="black" borderRadius="full" w="12" h="12" />
         <Box display="flex" flexDirection="column" ml="4" flex="1">
           <Heading fontSize="lg" fontWeight="bold" color="black">
-            {name}
+            {project.name}
           </Heading>
           <Heading fontSize="md" fontWeight="semibold">
-            230+ hours
+            {calculateTotalTime(project)}
           </Heading>
         </Box>
         <Box>
@@ -88,7 +83,7 @@ const CreateProjectItem = () => {
   );
 };
 
-const Projects: React.FC<ProjectsProps> = ({ navigation }: any) => {
+const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShadowVisible: false,
@@ -113,10 +108,10 @@ const Projects: React.FC<ProjectsProps> = ({ navigation }: any) => {
         <Stack space="4" mt="4">
           {getAllProjects().map((project) => (
             <ProjectItem
-              name={project.name}
+              project={project}
               key={project.id}
-              projectId={project.id}
               navigation={navigation}
+              route={route}
             />
           ))}
         </Stack>

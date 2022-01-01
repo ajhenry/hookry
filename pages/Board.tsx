@@ -1,12 +1,13 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useKeepAwake } from "expo-keep-awake";
-import { Box, Flex, Heading, useDisclose } from "native-base";
+import { Box, useDisclose } from "native-base";
 import React, { useContext } from "react";
 import { Pressable } from "react-native";
 import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator
 } from "react-native-draggable-flatlist";
+import { BlankBoardText } from "../components/BlankBoardText";
 import { WidgetLibrary } from "../components/WidgetLibrary";
 import { LargeCounterWidget } from "../components/Widgets/LargeCounter";
 import { NotesWidget } from "../components/Widgets/Notes";
@@ -66,10 +67,7 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
     const { isActive, drag, item } = props;
     return (
       <ScaleDecorator>
-        <Pressable
-          disabled={isActive}
-          onLongPress={drag}
-        >
+        <Pressable disabled={isActive} onLongPress={drag}>
           {item.type === "large-counter" && (
             <LargeCounterWidget
               widgetId={item.id}
@@ -101,10 +99,10 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
   };
 
   const widgets = getWidgetList(projectId);
-  
+
   // Keeps the screen awake
   useKeepAwake();
-  
+
   return (
     <>
       <Box
@@ -116,11 +114,7 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
         safeAreaBottom
       >
         <Box h="full">
-          {widgets.length === 0 && (
-            <Flex alignItems="center" justifyContent="center">
-              <Heading>Add widgets above</Heading>
-            </Flex>
-          )}
+          {widgets.length === 0 && <BlankBoardText />}
           <DraggableFlatList
             data={widgets}
             onDragEnd={({ data }) => setBoardWidgetList(projectId, data)}

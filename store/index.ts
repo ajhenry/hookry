@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export interface LargeCounter {
+export interface LargeCounter extends BaseWidgetItem {
   type: "large-counter";
   data: {
     count: number;
@@ -10,7 +10,7 @@ export interface LargeCounter {
   };
 }
 
-export interface SmallCounter {
+export interface SmallCounter extends BaseWidgetItem {
   type: "small-counter";
   data: {
     left: { count: number; label: string; id: string; colors: string[] };
@@ -18,36 +18,26 @@ export interface SmallCounter {
   };
 }
 
-export interface Timer {
+export interface Timer extends BaseWidgetItem {
   type: "timer";
   data: { total: number };
 }
 
-export interface Heading {
+export interface Heading extends BaseWidgetItem {
   type: "heading";
   data: { label: string };
 }
 
-export interface Notes {
+export interface Notes extends BaseWidgetItem {
   type: "notes";
   data: { notes: string; title: string };
 }
 
 interface BaseWidgetItem {
   id: string;
-  type:
-    | "timer"
-    | "large-counter"
-    | "small-counter"
-    | "notes"
-    | "heading"
-    | "add-widget"
-    | "heading";
-  data?: any;
 }
 
-export type WidgetItem = BaseWidgetItem &
-  (LargeCounter | SmallCounter | Timer | Heading | Notes);
+export type WidgetItem = LargeCounter | SmallCounter | Timer | Heading | Notes;
 
 export interface Board {
   id: string;

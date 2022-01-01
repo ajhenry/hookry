@@ -13,25 +13,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { useDelete } from "../../hooks/useDelete";
 import { ProjectContext, Timer, WidgetItem } from "../../store";
+import { secondsToTime } from "../../utils/time";
 import WidgetContainer from "../Widget";
 import { WidgetLibraryBase } from "../WidgetLibrary";
 
-function secondsToTime(secs: number) {
-  var hours = Math.floor(secs / (60 * 60));
-
-  var divisor_for_minutes = secs % (60 * 60);
-  var minutes = Math.floor(divisor_for_minutes / 60);
-
-  var divisor_for_seconds = divisor_for_minutes % 60;
-  var seconds = Math.ceil(divisor_for_seconds);
-
-  var obj = {
-    h: hours,
-    m: minutes,
-    s: seconds,
-  };
-  return obj;
-}
 
 interface TimerWidgetProps {
   widgetId: string;
