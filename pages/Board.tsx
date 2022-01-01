@@ -1,4 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
+import { useKeepAwake } from "expo-keep-awake";
 import { Box, Flex, Heading, useDisclose } from "native-base";
 import React, { useContext } from "react";
 import { Pressable } from "react-native";
@@ -100,7 +101,9 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
   };
 
   const widgets = getWidgetList(projectId);
-
+  
+  
+  useKeepAwake();
   return (
     <>
       <Box

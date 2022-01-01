@@ -36,7 +36,7 @@ export interface Notes {
 interface BaseWidgetItem {
   id: string;
   type:
-    | "timestamp"
+    | "timer"
     | "large-counter"
     | "small-counter"
     | "notes"
