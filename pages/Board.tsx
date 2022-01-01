@@ -102,8 +102,9 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
 
   const widgets = getWidgetList(projectId);
   
-  
+  // Keeps the screen awake
   useKeepAwake();
+  
   return (
     <>
       <Box
