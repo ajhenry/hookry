@@ -1,6 +1,5 @@
 import { Actionsheet, Box, Flex, Heading, ScrollView } from "native-base";
 import React from "react";
-import { Pressable } from "react-native";
 import { WidgetItem } from "../store";
 import {
   largeCounterLibraryDefaults,
@@ -13,22 +12,24 @@ import {
 } from "./Widgets/SmallCounter";
 import { timerLibraryDefaults, TimerLibraryItem } from "./Widgets/Timer";
 
+export interface WidgetLibraryBase {
+  onPress: () => void;
+}
+
 interface WidgetLibraryProps {
   isOpen: boolean;
   onClose: () => void;
   onWidgetSelect: (type: WidgetItem["type"]) => void;
 }
 
-const WidgetLibraryRowItem = ({ label, children, onPress }: any) => {
+const WidgetLibraryRowItem = ({ label, children }: any) => {
   return (
-    <Pressable onPress={onPress}>
-      <Flex w="full" mb="6">
-        <Heading mb="2" fontSize="xl" fontWeight="semibold">
-          {label}
-        </Heading>
-        {children}
-      </Flex>
-    </Pressable>
+    <Flex w="full" mb="6">
+      <Heading mb="2" fontSize="xl" fontWeight="semibold">
+        {label}
+      </Heading>
+      {children}
+    </Flex>
   );
 };
 
@@ -45,29 +46,29 @@ export const WidgetLibrary: React.FC<WidgetLibraryProps> = ({
         </Box>
 
         <ScrollView w="full">
-          <WidgetLibraryRowItem
-            label="Large Counter"
-            onPress={() => onWidgetSelect("large-counter")}
-          >
-            <LargeCounterLibraryItem {...largeCounterLibraryDefaults} />
+          <WidgetLibraryRowItem label="Large Counter">
+            <LargeCounterLibraryItem
+              {...largeCounterLibraryDefaults}
+              onPress={() => onWidgetSelect("large-counter")}
+            />
           </WidgetLibraryRowItem>
-          <WidgetLibraryRowItem
-            label="Small Counters"
-            onPress={() => onWidgetSelect("small-counter")}
-          >
-            <SmallCounterLibraryItem {...smallCounterLibraryDefaults} />
+          <WidgetLibraryRowItem label="Small Counters">
+            <SmallCounterLibraryItem
+              {...smallCounterLibraryDefaults}
+              onPress={() => onWidgetSelect("small-counter")}
+            />
           </WidgetLibraryRowItem>
-          <WidgetLibraryRowItem
-            label="Timer"
-            onPress={() => onWidgetSelect("timer")}
-          >
-            <TimerLibraryItem {...timerLibraryDefaults} />
+          <WidgetLibraryRowItem label="Timer">
+            <TimerLibraryItem
+              {...timerLibraryDefaults}
+              onPress={() => onWidgetSelect("timer")}
+            />
           </WidgetLibraryRowItem>
-          <WidgetLibraryRowItem
-            label="Notes"
-            onPress={() => onWidgetSelect("notes")}
-          >
-            <NotesLibraryItem {...notesLibraryDefaults} />
+          <WidgetLibraryRowItem label="Notes">
+            <NotesLibraryItem
+              {...notesLibraryDefaults}
+              onPress={() => onWidgetSelect("notes")}
+            />
           </WidgetLibraryRowItem>
         </ScrollView>
       </Actionsheet.Content>

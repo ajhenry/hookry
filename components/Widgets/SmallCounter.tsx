@@ -3,10 +3,12 @@ import { Box, Heading, Pressable, useDisclose } from "native-base";
 import React, { useContext, useState } from "react";
 import { Dimensions } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
-import { ProjectContext, WidgetItem } from "../../store";
+import { useDelete } from "../../hooks/useDelete";
+import { ProjectContext, SmallCounter, WidgetItem } from "../../store";
 import { generateColorPalette } from "../../utils/colors";
 import { generateRandom } from "../../utils/random";
 import WidgetContainer from "../Widget";
+import { WidgetLibraryBase } from "../WidgetLibrary";
 import { CounterSettingsSheet } from "./CounterSettingsModal";
 
 interface SmallCounterWidgetProps {
@@ -52,6 +54,7 @@ export const SmallCounterSettingsSheet: React.FC<
 > = ({ dir, projectId, widgetId, isOpen, onClose }) => {
   const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
   const { data } = getWidgetData(projectId, widgetId);
+
   const { left, right } = data;
 
   const onSaveClick = (val: { count: number; label: string }) => {
@@ -80,9 +83,11 @@ export const SmallCounterSettingsSheet: React.FC<
 export const SmallCounterWidget: React.FC<
   SmallCounterWidgetProps & Omit<RenderItemParams<WidgetItem>, "item">
 > = ({ widgetId, projectId, drag, isActive }) => {
-  const { getWidgetData, saveWidgetData } = useContext(ProjectContext);
+  const { getWidgetData, saveWidgetData, removeWidget } =
+    useContext(ProjectContext);
   const { isOpen, onOpen, onClose } = useDisclose();
   const [dir, setDir] = useState<"left" | "right" | null>(null);
+  const [showDelete, onDelete] = useDelete();
 
   const { data } = getWidgetData(projectId, widgetId);
   const { left, right } = data;
@@ -105,7 +110,7 @@ export const SmallCounterWidget: React.FC<
     });
   };
 
-  const handlePress = (dir: "left" | "right") => {
+  const handleOuterPress = (dir: "left" | "right") => {
     setDir(dir);
     onOpen();
   };
@@ -115,123 +120,33 @@ export const SmallCounterWidget: React.FC<
     onClose();
   };
 
+  const handleLongPress = () => {
+    onDelete();
+    drag();
+  };
+
+  const onPressDelete = () => {
+    removeWidget(projectId, widgetId);
+  };
+
   return (
     <>
       <WidgetContainer
         size={1}
         drag={drag}
         isActive={isActive}
-        projectId={projectId}
-        widgetId={widgetId}
+        showDelete={showDelete}
+        onLongPress={handleLongPress}
+        onDeletePress={onPressDelete}
       >
-        <Box display="flex" height={24} flexDir="row">
-          <Pressable
-            onLongPress={drag}
-            onPress={() => handlePress("left")}
-            flex={1}
-          >
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              borderRadius="2xl"
-              flex={1}
-              bg={{
-                linearGradient: {
-                  colors: left.colors ?? ["#ffffff"],
-                  start: [0, 0.6],
-                  end: [0.8, 0.3],
-                },
-              }}
-            >
-              <Box
-                display="flex"
-                flexDir="row"
-                alignItems="center"
-                justifyContent="space-around"
-                flex={1}
-                width="100%"
-              >
-                <Pressable
-                  onPress={() => handleMinusPress("left")}
-                  onLongPress={drag}
-                >
-                  <Box>
-                    <AntDesign name="minus" size={36} />
-                  </Box>
-                </Pressable>
-                <Box maxW="1/3">
-                  <Heading fontSize="3xl">{left.count}</Heading>
-                </Box>
-                <Pressable
-                  onPress={() => handlePlusPress("left")}
-                  onLongPress={drag}
-                >
-                  <Box>
-                    <AntDesign name="plus" size={36} />
-                  </Box>
-                </Pressable>
-              </Box>
-              <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
-                {left.label}
-              </Heading>
-            </Box>
-          </Pressable>
-          <Box w={4} />
-          <Pressable
-            onLongPress={drag}
-            onPress={() => handlePress("right")}
-            flex={1}
-          >
-            <Box
-              h={24}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              borderRadius="2xl"
-              flex={1}
-              bg={{
-                linearGradient: {
-                  colors: right.colors ?? ["#ffffff"],
-                  start: [0, 0.6],
-                  end: [0.8, 0.3],
-                },
-              }}
-            >
-              <Box
-                display="flex"
-                flexDir="row"
-                alignItems="center"
-                justifyContent="space-around"
-                flex={1}
-                width="100%"
-              >
-                <Pressable
-                  onPress={() => handleMinusPress("right")}
-                  onLongPress={drag}
-                >
-                  <Box>
-                    <AntDesign name="minus" size={36} />
-                  </Box>
-                </Pressable>
-                <Box maxW="1/3">
-                  <Heading fontSize="3xl">{right.count}</Heading>
-                </Box>
-                <Pressable
-                  onPress={() => handlePlusPress("right")}
-                  onLongPress={drag}
-                >
-                  <Box>
-                    <AntDesign name="plus" size={36} />
-                  </Box>
-                </Pressable>
-              </Box>
-              <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
-                {right.label}
-              </Heading>
-            </Box>
-          </Pressable>
-        </Box>
+        <Widget
+          left={left}
+          right={right}
+          onLongPress={handleLongPress}
+          onMinusPress={handleMinusPress}
+          onPlusPress={handlePlusPress}
+          onOuterPress={handleOuterPress}
+        />
       </WidgetContainer>
       {
         <SmallCounterSettingsSheet
@@ -249,8 +164,12 @@ export const SmallCounterWidget: React.FC<
 export const SmallCounterLibraryItem = ({
   left,
   right,
-}: WidgetItem["data"]) => {
+  onPress,
+}: SmallCounter["data"] & WidgetLibraryBase) => {
   const { width } = Dimensions.get("window");
+
+  const noop = () => onPress();
+
   return (
     <Box
       display="flex"
@@ -259,9 +178,41 @@ export const SmallCounterLibraryItem = ({
       borderRadius="2xl"
       overflow="hidden"
     >
-      <Box display="flex" height={24} flexDir="row">
+      <Widget
+        left={left}
+        right={right}
+        onLongPress={noop}
+        onMinusPress={noop}
+        onOuterPress={noop}
+        onPlusPress={noop}
+      />
+    </Box>
+  );
+};
+
+interface WidgetProps {
+  onLongPress: () => void;
+  onOuterPress: (dir: "left" | "right") => void;
+  onPlusPress: (dir: "left" | "right") => void;
+  onMinusPress: (dir: "left" | "right") => void;
+}
+
+const Widget: React.FC<SmallCounter["data"] & WidgetProps> = ({
+  left,
+  right,
+  onLongPress,
+  onOuterPress,
+  onPlusPress,
+  onMinusPress,
+}) => {
+  return (
+    <Box display="flex" height={24} flexDir="row">
+      <Pressable
+        onLongPress={onLongPress}
+        onPress={() => onOuterPress("left")}
+        flex={1}
+      >
         <Box
-          h={24}
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -269,7 +220,7 @@ export const SmallCounterLibraryItem = ({
           flex={1}
           bg={{
             linearGradient: {
-              colors: left.colors ?? ["#ffffff"],
+              colors: left!.colors ?? ["#ffffff"],
               start: [0, 0.6],
               end: [0.8, 0.3],
             },
@@ -283,23 +234,37 @@ export const SmallCounterLibraryItem = ({
             flex={1}
             width="100%"
           >
-            <Box>
-              <AntDesign name="minus" size={36} />
-            </Box>
-
+            <Pressable
+              onPress={() => onMinusPress("left")}
+              onLongPress={onLongPress}
+            >
+              <Box>
+                <AntDesign name="minus" size={36} />
+              </Box>
+            </Pressable>
             <Box maxW="1/3">
               <Heading fontSize="3xl">{left.count}</Heading>
             </Box>
-
-            <Box>
-              <AntDesign name="plus" size={36} />
-            </Box>
+            <Pressable
+              onPress={() => onPlusPress("left")}
+              onLongPress={onLongPress}
+            >
+              <Box>
+                <AntDesign name="plus" size={36} />
+              </Box>
+            </Pressable>
           </Box>
           <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
-            {left.label}
+            {left!.label}
           </Heading>
         </Box>
-        <Box w={4} />
+      </Pressable>
+      <Box w={4} />
+      <Pressable
+        onLongPress={onLongPress}
+        onPress={() => onOuterPress("right")}
+        flex={1}
+      >
         <Box
           h={24}
           display="flex"
@@ -323,23 +288,31 @@ export const SmallCounterLibraryItem = ({
             flex={1}
             width="100%"
           >
-            <Box>
-              <AntDesign name="minus" size={36} />
-            </Box>
-
+            <Pressable
+              onPress={() => onMinusPress("right")}
+              onLongPress={onLongPress}
+            >
+              <Box>
+                <AntDesign name="minus" size={36} />
+              </Box>
+            </Pressable>
             <Box maxW="1/3">
               <Heading fontSize="3xl">{right.count}</Heading>
             </Box>
-
-            <Box>
-              <AntDesign name="plus" size={36} />
-            </Box>
+            <Pressable
+              onPress={() => onPlusPress("right")}
+              onLongPress={onLongPress}
+            >
+              <Box>
+                <AntDesign name="plus" size={36} />
+              </Box>
+            </Pressable>
           </Box>
           <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
             {right.label}
           </Heading>
         </Box>
-      </Box>
+      </Pressable>
     </Box>
   );
 };

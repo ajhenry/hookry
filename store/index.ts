@@ -13,8 +13,8 @@ export interface LargeCounter {
 export interface SmallCounter {
   type: "small-counter";
   data: {
-    left: { count: number; label: string; id: string } | undefined | null;
-    right: { count: number; label: string; id: string } | undefined | null;
+    left: { count: number; label: string; id: string; colors: string[] };
+    right: { count: number; label: string; id: string; colors: string[] };
   };
 }
 
@@ -89,7 +89,7 @@ export const ProjectContext = createContext<{
   getProject: (projectId: string) => ({} as Project),
   getAllProjects: () => [],
   getWidgetList: (projectId: string) => [],
-  getWidgetData: (projectId: string, widgetId: string) => ({}),
+  getWidgetData: (projectId: string, widgetId: string) => ({} as WidgetItem),
   saveWidgetData: (projectId: string, widgetId: string, data: WidgetItem) => {},
   createProject: (data: Project) => {},
   addWidget: (projectId: string, data: WidgetItem) => {},

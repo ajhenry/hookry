@@ -1,44 +1,31 @@
 import { AntDesign } from "@expo/vector-icons";
 import { Box, Pressable } from "native-base";
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { Dimensions } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
-import { ProjectContext, WidgetItem } from "../store";
+import { WidgetItem } from "../store";
 
 export interface WidgetContainerProps {
   size: number;
   onPress?: () => void;
-  projectId: string;
-  widgetId: string;
+  onLongPress?: () => void;
+  showDelete?: boolean;
+  onDeletePress?: () => void;
 }
 
 const WidgetContainer: React.FC<
   WidgetContainerProps & Omit<RenderItemParams<WidgetItem>, "item">
-> = ({ size, children, drag, isActive, onPress, projectId, widgetId }) => {
+> = ({
+  size,
+  children,
+  drag,
+  isActive,
+  onPress,
+  onLongPress,
+  onDeletePress,
+  showDelete,
+}) => {
   const { width } = Dimensions.get("window");
-  const { removeWidget } = useContext(ProjectContext);
-
-  const [showDelete, setShowDelete] = useState(false);
-
-  const onLongPress = () => {
-    setShowDelete(true);
-
-    drag();
-  };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowDelete(false);
-    }, 3000);
-    if (!setShowDelete) {
-      () => clearTimeout(timeout);
-    }
-    return () => clearTimeout(timeout);
-  }, [showDelete]);
-
-  const onPressDelete = () => {
-    removeWidget(projectId, widgetId);
-  };
 
   return (
     <Pressable
@@ -49,7 +36,7 @@ const WidgetContainer: React.FC<
       onLongPress={onLongPress}
     >
       {showDelete && (
-        <Pressable onPress={onPressDelete} zIndex={100}>
+        <Pressable onPress={() => onDeletePress?.()} zIndex={100}>
           <Box
             position="absolute"
             borderRadius="full"

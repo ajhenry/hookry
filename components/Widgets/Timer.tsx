@@ -6,12 +6,15 @@ import {
   Heading,
   Input,
   Modal,
+  Pressable,
   useDisclose
 } from "native-base";
 import React, { useContext, useEffect, useState } from "react";
 import { RenderItemParams } from "react-native-draggable-flatlist";
-import { ProjectContext, WidgetItem } from "../../store";
+import { useDelete } from "../../hooks/useDelete";
+import { ProjectContext, Timer, WidgetItem } from "../../store";
 import WidgetContainer from "../Widget";
+import { WidgetLibraryBase } from "../WidgetLibrary";
 
 function secondsToTime(secs: number) {
   var hours = Math.floor(secs / (60 * 60));
@@ -112,8 +115,10 @@ export const TimerSettingsSheet: React.FC<
 export const TimerWidget: React.FC<
   TimerWidgetProps & Omit<RenderItemParams<WidgetItem>, "item">
 > = ({ widgetId, projectId, drag, isActive }) => {
-  const { getWidgetData, saveWidgetData } = useContext(ProjectContext);
+  const { getWidgetData, saveWidgetData, removeWidget } =
+    useContext(ProjectContext);
   const { isOpen, onOpen, onClose } = useDisclose();
+  const [showDelete, onDelete] = useDelete();
   const { data } = getWidgetData(projectId, widgetId);
   const { total } = data;
   const [runningTotal, setRunningTotal] = useState<number>(total);
@@ -141,10 +146,17 @@ export const TimerWidget: React.FC<
     updateTime(runningTotal);
   }, [runningTotal]);
 
-  const { h, m, s } = secondsToTime(runningTotal);
-
   const handlePress = () => {
     setPaused((v) => !v);
+  };
+
+  const handleLongPress = () => {
+    onDelete();
+    drag();
+  };
+
+  const onPressDelete = () => {
+    removeWidget(projectId, widgetId);
   };
 
   return (
@@ -154,21 +166,16 @@ export const TimerWidget: React.FC<
         drag={drag}
         isActive={isActive}
         onPress={handlePress}
-        projectId={projectId}
-        widgetId={widgetId}
+        showDelete={showDelete}
+        onLongPress={handleLongPress}
+        onDeletePress={onPressDelete}
       >
-        <Box
-          w="full"
-          h="16"
-          display="flex"
-          flexDir="row"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Heading mr={2} color={paused? "rgba(0, 0, 0, 0.5)": "black"}>
-            {h > 0 && `${h} hrs`} {m} mins {s} secs
-          </Heading>
-        </Box>
+        <Widget
+          total={runningTotal}
+          paused={paused}
+          onPress={handlePress}
+          onLongPress={handleLongPress}
+        />
       </WidgetContainer>
       {
         <TimerSettingsSheet
@@ -182,10 +189,35 @@ export const TimerWidget: React.FC<
   );
 };
 
-export const TimerLibraryItem = ({ total }: WidgetItem["data"]) => {
-  const { h, m, s } = secondsToTime(total);
+export const TimerLibraryItem = ({
+  total,
+  onPress,
+}: Timer["data"] & WidgetLibraryBase) => {
+  const noop = () => onPress();
+
   return (
     <Flex flexDir="column" m={2} borderRadius="2xl" overflow="hidden">
+      <Widget total={total} onLongPress={noop} onPress={noop} />
+    </Flex>
+  );
+};
+
+interface WidgetProps {
+  onLongPress: () => void;
+  onPress: () => void;
+  paused?: boolean;
+}
+
+const Widget: React.FC<Timer["data"] & WidgetProps> = ({
+  total,
+  paused,
+  onLongPress,
+  onPress,
+}) => {
+  const { h, m, s } = secondsToTime(total);
+
+  return (
+    <Pressable onPress={onPress} onLongPress={onLongPress}>
       <Box
         w="full"
         h="16"
@@ -194,10 +226,10 @@ export const TimerLibraryItem = ({ total }: WidgetItem["data"]) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Heading mr={2}>
+        <Heading mr={2} color={paused ? "rgba(0, 0, 0, 0.5)" : "black"}>
           {h > 0 && `${h} hrs`} {m} mins {s} secs
         </Heading>
       </Box>
-    </Flex>
+    </Pressable>
   );
 };

@@ -4,16 +4,19 @@ import {
   Heading,
   Input,
   KeyboardAvoidingView,
+  Pressable,
   ScrollView
 } from "native-base";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Dimensions, Platform, useWindowDimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import RenderHtml from "react-native-render-html";
-import { ProjectContext, WidgetItem } from "../../store";
+import { useDelete } from "../../hooks/useDelete";
+import { Notes, ProjectContext, WidgetItem } from "../../store";
 import { generateRandom } from "../../utils/random";
 import WidgetContainer from "../Widget";
+import { WidgetLibraryBase } from "../WidgetLibrary";
 
 interface NotesProps {
   title?: string;
@@ -114,14 +117,11 @@ export const NotesSettingsPage: React.FC<
 export const NotesWidget: React.FC<
   NotesWidgetProps & Omit<RenderItemParams<WidgetItem>, "item">
 > = ({ widgetId, projectId, drag, isActive, navigation }) => {
-  const { getWidgetData, saveWidgetData } = useContext(ProjectContext);
-  const { width } = useWindowDimensions();
+  const [showDelete, onDelete] = useDelete();
+  const { getWidgetData, saveWidgetData, removeWidget } =
+    useContext(ProjectContext);
   const { data } = getWidgetData(projectId, widgetId);
   const { notes, title } = data;
-
-  const source = {
-    html: notes.length !== 0 ? notes : "<div>This note is blank 😞</div>",
-  };
 
   const handlePress = () => {
     navigation.navigate("Notes", {
@@ -130,29 +130,42 @@ export const NotesWidget: React.FC<
     });
   };
 
+  const handleLongPress = () => {
+    onDelete();
+    drag();
+  };
+
+  const onPressDelete = () => {
+    removeWidget(projectId, widgetId);
+  };
+
   return (
     <WidgetContainer
       size={1}
       drag={drag}
       isActive={isActive}
       onPress={handlePress}
-      projectId={projectId}
-      widgetId={widgetId}
+      showDelete={showDelete}
+      onLongPress={handleLongPress}
+      onDeletePress={onPressDelete}
     >
-      <Box p={2}>
-        <Heading>{title}</Heading>
-        <RenderHtml contentWidth={width} source={source} />
-      </Box>
+      <Widget
+        notes={notes}
+        title={title}
+        onLongPress={handleLongPress}
+        onPress={handlePress}
+      />
     </WidgetContainer>
   );
 };
 
-export const NotesLibraryItem = ({ notes, title }: WidgetItem["data"]) => {
+export const NotesLibraryItem = ({
+  notes,
+  title,
+  onPress,
+}: Notes["data"] & WidgetLibraryBase) => {
   const { width } = Dimensions.get("window");
-
-  const source = {
-    html: notes.length !== 0 ? notes : "<div>This note is blank</div>",
-  };
+  const noop = () => onPress();
 
   return (
     <Box
@@ -163,10 +176,34 @@ export const NotesLibraryItem = ({ notes, title }: WidgetItem["data"]) => {
       borderRadius="2xl"
       overflow="hidden"
     >
+      <Widget notes={notes} title={title} onLongPress={noop} onPress={noop} />
+    </Box>
+  );
+};
+
+interface WidgetProps {
+  onLongPress: () => void;
+  onPress: () => void;
+}
+
+const Widget: React.FC<Notes["data"] & WidgetProps> = ({
+  notes,
+  title,
+  onLongPress,
+  onPress,
+}) => {
+  const { width } = Dimensions.get("window");
+
+  const source = {
+    html: notes.length !== 0 ? notes : "<div>This note is blank 😞</div>",
+  };
+
+  return (
+    <Pressable onPress={onPress} onLongPress={onLongPress}>
       <Box p={2}>
         <Heading>{title}</Heading>
         <RenderHtml contentWidth={width} source={source} />
       </Box>
-    </Box>
+    </Pressable>
   );
 };
