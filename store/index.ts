@@ -30,7 +30,7 @@ export interface Heading extends BaseWidgetItem {
 
 export interface Notes extends BaseWidgetItem {
   type: "notes";
-  data: { notes: string; title: string };
+  data: { notes: string; title: string | undefined };
 }
 
 interface BaseWidgetItem {
@@ -68,7 +68,7 @@ export const ProjectContext = createContext<{
   saveWidgetData: (
     projectId: string,
     widgetId: string,
-    data: WidgetItem
+    data: WidgetItem['data']
   ) => void;
   createProject: (data: Project) => void;
   addWidget: (projectId: string, data: WidgetItem) => void;
@@ -80,7 +80,7 @@ export const ProjectContext = createContext<{
   getAllProjects: () => [],
   getWidgetList: (projectId: string) => [],
   getWidgetData: (projectId: string, widgetId: string) => ({} as WidgetItem),
-  saveWidgetData: (projectId: string, widgetId: string, data: WidgetItem) => {},
+  saveWidgetData: (projectId: string, widgetId: string, data: WidgetItem['data']) => {},
   createProject: (data: Project) => {},
   addWidget: (projectId: string, data: WidgetItem) => {},
   setBoardWidgetList: (projectId: string, data: WidgetItem[]) => {},

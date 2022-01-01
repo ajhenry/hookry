@@ -98,7 +98,7 @@ export default function App() {
   function saveWidgetData(
     projectId: string,
     widgetId: string,
-    data: WidgetItem
+    data: WidgetItem["data"]
   ) {
     const newProjectData = cloneDeep(projectData);
 

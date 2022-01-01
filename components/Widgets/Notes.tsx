@@ -49,7 +49,7 @@ export const NotesSettingsPage: React.FC<
   const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
   const { projectId, widgetId } = route.params;
   const { data } = getWidgetData(projectId, widgetId);
-  const { title, notes } = data;
+  const { title, notes } = data as Notes["data"];
   const [modifiedTitle, setModifiedTitle] = useState(title);
   const [modifiedNotes, setModifiedNotes] = useState(notes);
   let richText = useRef(null);
@@ -121,7 +121,7 @@ export const NotesWidget: React.FC<
   const { getWidgetData, saveWidgetData, removeWidget } =
     useContext(ProjectContext);
   const { data } = getWidgetData(projectId, widgetId);
-  const { notes, title } = data;
+  const { notes, title } = data as Notes["data"];
 
   const handlePress = () => {
     navigation.navigate("Notes", {

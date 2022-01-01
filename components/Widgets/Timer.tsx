@@ -17,7 +17,6 @@ import { secondsToTime } from "../../utils/time";
 import WidgetContainer from "../Widget";
 import { WidgetLibraryBase } from "../WidgetLibrary";
 
-
 interface TimerWidgetProps {
   widgetId: string;
   projectId: string;
@@ -36,7 +35,7 @@ export const TimerSettingsSheet: React.FC<
 > = ({ projectId, widgetId, isOpen, onClose }) => {
   const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
   const { data } = getWidgetData(projectId, widgetId);
-  const { total } = data;
+  const { total } = data as Timer["data"];
   const [counterLabel, setCounterLabel] = useState(total);
 
   useEffect(() => {
@@ -76,9 +75,9 @@ export const TimerSettingsSheet: React.FC<
                 borderWidth={0}
                 fontSize="lg"
                 h={10}
-                onChangeText={(text) => setCounterLabel(text)}
+                onChangeText={(text) => {}}
                 autoCorrect={false}
-                value={counterLabel}
+                value={String(counterLabel)}
               />
             </Box>
           </FormControl>
@@ -105,7 +104,7 @@ export const TimerWidget: React.FC<
   const { isOpen, onOpen, onClose } = useDisclose();
   const [showDelete, onDelete] = useDelete();
   const { data } = getWidgetData(projectId, widgetId);
-  const { total } = data;
+  const { total } = data as Timer["data"];
   const [runningTotal, setRunningTotal] = useState<number>(total);
   const [paused, setPaused] = useState(true);
 

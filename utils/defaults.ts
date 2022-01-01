@@ -6,7 +6,7 @@ import { WidgetItem } from "../store";
 
 export const generateNewWidgetData = (
   type: WidgetItem["type"]
-): WidgetItem["data"] => {
+): WidgetItem["data"] | undefined => {
   switch (type) {
     case "large-counter":
       return newLargeCounterDefaults;
@@ -17,4 +17,6 @@ export const generateNewWidgetData = (
     case "timer":
       return newTimerDefaults;
   }
+
+  return undefined;
 };

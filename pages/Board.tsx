@@ -60,7 +60,7 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
     };
 
     widgetLibraryOnClose();
-    addWidget(projectId, newEntry);
+    addWidget(projectId, newEntry as WidgetItem);
   };
 
   const renderItem = (props: RenderItemParams<WidgetItem>) => {
