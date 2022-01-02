@@ -8,6 +8,7 @@ import {
   Stack
 } from "native-base";
 import React, { useContext } from "react";
+import { ProjectLogo } from "../components/ProjectLogo";
 import { Project, ProjectContext } from "../store";
 import { calculateTotalTime } from "../utils/time";
 import { HomeProps } from "./DefaultNavigator";
@@ -33,13 +34,20 @@ const ProjectItem: React.FC<HomeProps & { project: Project }> = ({
         p={4}
         bg={{
           linearGradient: {
-            colors: ["rgb(255,215,215)", "rgb(254,175,145)"],
+            colors: project.colors ?? ["rgb(255,215,215)"],
             start: [1, 1],
             end: [0, 0],
           },
         }}
       >
-        <Box bg="black" borderRadius="full" w="12" h="12" />
+        <Box>
+          <ProjectLogo
+            color={project.colors?.[0] ?? "#fff"}
+            projectImage={project.image}
+            projectName={project.name}
+            size={12}
+          />
+        </Box>
         <Box display="flex" flexDirection="column" ml="4" flex="1">
           <Heading fontSize="lg" fontWeight="bold" color="black">
             {project.name}

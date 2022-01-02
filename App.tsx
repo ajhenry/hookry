@@ -122,6 +122,12 @@ export default function App() {
     setProjectData(newProjectData);
   }
 
+  function saveProject(projectId: string, data: Project) {
+    const newProjectData = cloneDeep(projectData);
+    newProjectData[projectId] = data;
+    setProjectData(newProjectData);
+  }
+
   const value = {
     projectData,
     getProject,
@@ -133,6 +139,7 @@ export default function App() {
     addWidget,
     setBoardWidgetList,
     removeWidget,
+    saveProject,
   };
 
   return (

@@ -49,6 +49,9 @@ export interface Project {
   name: string;
   description?: string;
   board: Board;
+  completed?: boolean;
+  image?: string | null;
+  colors?: string[];
 }
 
 export interface ProjectContext {
@@ -68,23 +71,29 @@ export const ProjectContext = createContext<{
   saveWidgetData: (
     projectId: string,
     widgetId: string,
-    data: WidgetItem['data']
+    data: WidgetItem["data"]
   ) => void;
   createProject: (data: Project) => void;
   addWidget: (projectId: string, data: WidgetItem) => void;
   setBoardWidgetList: (projectId: string, data: WidgetItem[]) => void;
   removeWidget: (projectId: string, widgetId: string) => void;
+  saveProject: (projectId: string, data: Project) => void;
 }>({
   projectData: initialProjectData,
   getProject: (projectId: string) => ({} as Project),
   getAllProjects: () => [],
   getWidgetList: (projectId: string) => [],
   getWidgetData: (projectId: string, widgetId: string) => ({} as WidgetItem),
-  saveWidgetData: (projectId: string, widgetId: string, data: WidgetItem['data']) => {},
+  saveWidgetData: (
+    projectId: string,
+    widgetId: string,
+    data: WidgetItem["data"]
+  ) => {},
   createProject: (data: Project) => {},
   addWidget: (projectId: string, data: WidgetItem) => {},
   setBoardWidgetList: (projectId: string, data: WidgetItem[]) => {},
   removeWidget: (projectId: string, widgetId: string) => ({}),
+  saveProject: (projectId: string, data: Project) => ({}),
 });
 
 export const BoardContext = createContext<{

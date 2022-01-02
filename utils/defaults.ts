@@ -20,3 +20,14 @@ export const generateNewWidgetData = (
 
   return undefined;
 };
+
+export const generateAvatarInitials = (name: string) => {
+  if (!name.includes(" ")) {
+    return name.charAt(0).toUpperCase();
+  }
+
+  return (
+    name.charAt(0).toUpperCase() +
+    name.charAt(name.indexOf(" ") + 1).toUpperCase()
+  );
+};
