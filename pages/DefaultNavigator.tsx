@@ -21,6 +21,7 @@ import {
 } from "native-base";
 import React from "react";
 import { NotesSettingsPage } from "../components/Widgets/Notes";
+import { hotPatchVersion } from "../utils/constants";
 import Board from "./Board";
 import BoardSettingsPage from "./BoardSettings";
 import NewProject from "./NewProject";
@@ -163,7 +164,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           )}
           <VStack space="3" ml={4}>
             <Text fontSize="xs" fontWeight="semibold" color="black" mt={8}>
-              v{Constants.manifest?.version ?? "0.0.0"}
+              v{Constants.manifest?.version ?? "0.0.0"} - {hotPatchVersion}
             </Text>
           </VStack>
         </VStack>

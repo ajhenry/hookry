@@ -16,7 +16,6 @@ import { ProjectContext, WidgetItem } from "../store";
 import { generateNewWidgetData } from "../utils/defaults";
 import { generateRandom } from "../utils/random";
 
-
 interface BoardProps {
   route: any;
   navigation: any;
