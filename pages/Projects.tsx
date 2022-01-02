@@ -1,7 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
-import { Box, Button, ChevronRightIcon, Heading, Stack } from "native-base";
+import {
+  Box,
+  Button,
+  ChevronRightIcon,
+  Heading,
+  Pressable,
+  Stack
+} from "native-base";
 import React, { useContext } from "react";
-import { Pressable } from "react-native";
 import { Project, ProjectContext } from "../store";
 import { calculateTotalTime } from "../utils/time";
 import { HomeProps } from "./DefaultNavigator";
@@ -86,7 +92,6 @@ const CreateProjectItem = () => {
 const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerShadowVisible: false,
       title: "Projects",
     });
   }, [navigation]);

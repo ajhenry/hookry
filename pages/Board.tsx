@@ -1,8 +1,7 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useKeepAwake } from "expo-keep-awake";
-import { Box, useDisclose } from "native-base";
+import { Box, Pressable, useDisclose } from "native-base";
 import React, { useContext } from "react";
-import { Pressable } from "react-native";
 import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator
@@ -16,6 +15,7 @@ import { TimerWidget } from "../components/Widgets/Timer";
 import { ProjectContext, WidgetItem } from "../store";
 import { generateNewWidgetData } from "../utils/defaults";
 import { generateRandom } from "../utils/random";
+
 
 interface BoardProps {
   route: any;
@@ -36,9 +36,8 @@ const Board: React.FC<BoardProps> = ({ route, navigation }) => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerShadowVisible: false,
       headerRight: () => (
-        <Box mr={2}>
+        <Box mr={4}>
           <AntDesign
             name="plus"
             size={24}

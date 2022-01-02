@@ -1,9 +1,10 @@
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
   DrawerContentScrollView
 } from "@react-navigation/drawer";
+import { DrawerActions } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   NativeStackScreenProps
@@ -101,7 +102,6 @@ const DrawerRoute = ({ label, isActive, onPress, iconName }: any) => {
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const currentRouteName = props.state.routeNames[props.state.index];
-  console.log(props.state);
 
   const { projectId } = (props.state.routes[props.state.index]
     ?.params as any) ?? { projectId: undefined };
@@ -178,10 +178,82 @@ const RootDrawer = ({ navigation }: any) => {
       <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
-        <Drawer.Screen name="Home" component={Projects} />
-        <Drawer.Screen name="Board" component={Board} />
-        <Drawer.Screen name="Settings" component={SettingsPage} />
-        <Drawer.Screen name="BoardSettings" component={BoardSettingsPage} />
+        <Drawer.Screen
+          name="Home"
+          component={Projects}
+          options={{
+            headerShadowVisible: false,
+            headerLeft: () => {
+              return (
+                <Pressable
+                  ml={4}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.toggleDrawer())
+                  }
+                >
+                  <Ionicons name="menu-outline" size={32} />
+                </Pressable>
+              );
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="Board"
+          component={Board}
+          options={{
+            headerShadowVisible: false,
+            headerLeft: () => {
+              return (
+                <Pressable
+                  ml={4}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.toggleDrawer())
+                  }
+                >
+                  <Ionicons name="menu-outline" size={32} />
+                </Pressable>
+              );
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="Settings"
+          component={SettingsPage}
+          options={{
+            headerShadowVisible: false,
+            headerLeft: () => {
+              return (
+                <Pressable
+                  ml={4}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.toggleDrawer())
+                  }
+                >
+                  <Ionicons name="menu-outline" size={32} />
+                </Pressable>
+              );
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="BoardSettings"
+          component={BoardSettingsPage}
+          options={{
+            headerShadowVisible: false,
+            headerLeft: () => {
+              return (
+                <Pressable
+                  ml={4}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.toggleDrawer())
+                  }
+                >
+                  <Ionicons name="menu-outline" size={32} />
+                </Pressable>
+              );
+            },
+          }}
+        />
       </Drawer.Navigator>
     </Box>
   );
