@@ -1,20 +1,22 @@
 import * as ImagePicker from "expo-image-picker";
 import {
-    Box,
-    Button,
-    Checkbox,
-    Heading,
-    Input,
-    Pressable,
-    TextArea,
-    useToast,
-    VStack
+  Box,
+  Button,
+  Checkbox,
+  Heading,
+  Input,
+  Pressable,
+  TextArea,
+  useToast,
+  VStack
 } from "native-base";
 import React, { useEffect, useState } from "react";
+import { Keyboard } from "react-native";
 import { Project } from "../store";
 import { generateColorPalette } from "../utils/colors";
 import { generateRandom } from "../utils/random";
 import { theme } from "../utils/theme";
+import { DismissKeyboard } from "./DismissKeyboard";
 import { ProjectLogo } from "./ProjectLogo";
 
 interface ProjectDetailsProps {
@@ -45,7 +47,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     setProjectName(projectDetails?.name ?? undefined);
     setProjectDescription(projectDetails?.description ?? undefined);
     setProjectColor(projectDetails?.colors ?? generateColorPalette());
-  }, [projectDetails]);
+  }, []);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -100,72 +102,80 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     showToast();
   };
 
-  console.log(projectImage);
-
   return (
     <VStack display="flex" h="full" safeAreaBottom>
-      <Box flex={1} display="flex">
-        <Pressable
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          mt={8}
-          onPress={pickImage}
-        >
-          <ProjectLogo
-            projectImage={projectImage}
-            projectName={projectName}
-            color={projectColor[0]}
-          />
-        </Pressable>
-        <Box marginX={6} mt={4}>
-          <Heading fontSize="md" mb={2}>
-            Project Name
-          </Heading>
-          <Box {...theme.input} borderRadius="2xl" paddingX={2}>
-            <Input
-              borderColor="transparent"
-              bgColor="transparent"
-              borderWidth={0}
-              fontSize="lg"
-              h={10}
-              onChangeText={(text) => setProjectName(text)}
-              value={projectName}
-              autoCorrect={false}
+      <DismissKeyboard>
+        <Box flex={1} display="flex">
+          <Pressable
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            mt={8}
+            onPress={pickImage}
+          >
+            <ProjectLogo
+              projectImage={projectImage}
+              projectName={projectName}
+              color={projectColor[0]}
             />
-          </Box>
-          <Box mt={4}>
+          </Pressable>
+          <Box marginX={6} mt={4}>
             <Heading fontSize="md" mb={2}>
-              Project Description (optional)
+              Project Name
             </Heading>
             <Box {...theme.input} borderRadius="2xl" paddingX={2}>
-              <TextArea
+              <Input
                 borderColor="transparent"
                 bgColor="transparent"
                 borderWidth={0}
                 fontSize="lg"
-                multiline
-                numberOfLines={2}
-                onChangeText={(text) => setProjectDescription(text)}
-                value={projectDescription}
+                h={10}
+                onChangeText={(text) => setProjectName(text)}
+                value={projectName}
                 autoCorrect={false}
               />
             </Box>
-          </Box>
-          {projectDetails && (
             <Box mt={4}>
-              <Checkbox
-                colorScheme="blue"
-                value=""
-                isChecked={projectComplete}
-                onChange={setProjectComplete}
-              >
-                Project Complete
-              </Checkbox>
+              <Heading fontSize="md" mb={2}>
+                Project Description (optional)
+              </Heading>
+              <Box {...theme.input} borderRadius="2xl" paddingX={2}>
+                <TextArea
+                  borderColor="transparent"
+                  bgColor="transparent"
+                  borderWidth={0}
+                  fontSize="lg"
+                  multiline
+                  numberOfLines={2}
+                  onKeyPress={(e) => {
+                    if (e.nativeEvent.key === "Enter") {
+                      Keyboard.dismiss();
+                    }
+                  }}
+                  onChangeText={(text) => {
+                    setProjectDescription(text);
+                  }}
+                  value={projectDescription}
+                  autoCorrect={false}
+                  onBlur={() => Keyboard.dismiss()}
+                />
+              </Box>
             </Box>
-          )}
+            {projectDetails && (
+              <Box mt={4}>
+                <Checkbox
+                  colorScheme="blue"
+                  value=""
+                  isChecked={projectComplete}
+                  onChange={setProjectComplete}
+                >
+                  Project Complete
+                </Checkbox>
+              </Box>
+            )}
+          </Box>
         </Box>
-      </Box>
+      </DismissKeyboard>
       <Box>
         <Button
           onPress={handleSave}
