@@ -1,7 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
-import { Box, Flex, Heading, useDisclose } from "native-base";
+import { Box, Flex, Heading, Pressable, useDisclose } from "native-base";
 import React, { useContext } from "react";
-import { Pressable } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { useDelete } from "../../hooks/useDelete";
 import { LargeCounter, ProjectContext, WidgetItem } from "../../store";
@@ -66,7 +65,7 @@ export const LargeCounterWidget: React.FC<
   const [showDelete, onDelete] = useDelete();
 
   const { data } = getWidgetData(projectId, widgetId);
-  const { colors, count, label, id } = data;
+  const { colors, count, label, id } = data as LargeCounter["data"];
 
   const handleMinusPress = () => {
     if (count - 1 < 0) {
@@ -193,8 +192,16 @@ const Widget: React.FC<LargeCounter["data"] & WidgetProps> = ({
           },
         }}
       >
-        <Box display="flex" flexDir="row" alignItems="center">
-          <Pressable onPress={onMinusPress} onLongPress={onLongPress}>
+        <Box display="flex" flexDir="row" alignItems="center" h="100%">
+          <Pressable
+            onPress={onMinusPress}
+            onLongPress={onLongPress}
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="flex-end"
+            flex="1"
+          >
             <Box mr={8}>
               <AntDesign name="minus" size={48} />
             </Box>
@@ -206,10 +213,17 @@ const Widget: React.FC<LargeCounter["data"] & WidgetProps> = ({
             maxW="1/3"
             flexWrap="nowrap"
             textAlign="center"
+            minW="1/3"
+          ></Box>
+          <Pressable
+            onPress={onPlusPress}
+            onLongPress={onLongPress}
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="flex-start"
+            flex="1"
           >
-            <Heading fontSize="5xl">{count}</Heading>
-          </Box>
-          <Pressable onPress={onPlusPress} onLongPress={onLongPress}>
             <Box ml={8}>
               <AntDesign name="plus" size={48} />
             </Box>
@@ -218,6 +232,9 @@ const Widget: React.FC<LargeCounter["data"] & WidgetProps> = ({
         <Heading fontSize="xl" position="absolute" bottom={0} mb={2}>
           {label}
         </Heading>
+        <Box position="absolute" overflow="visible" zIndex={-10}>
+          <Heading fontSize="5xl">{count}</Heading>
+        </Box>
       </Box>
     </Pressable>
   );

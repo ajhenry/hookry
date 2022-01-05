@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import {
   Box,
   Button,
@@ -107,6 +108,8 @@ export const TimerWidget: React.FC<
   const { total } = data as Timer["data"];
   const [runningTotal, setRunningTotal] = useState<number>(total);
   const [paused, setPaused] = useState(true);
+  const isFocused = useIsFocused();
+  const isPaused = !isFocused || paused;
 
   const updateTime = (total: number) => {
     saveWidgetData(projectId, widgetId, {
@@ -156,7 +159,7 @@ export const TimerWidget: React.FC<
       >
         <Widget
           total={runningTotal}
-          paused={paused}
+          paused={isPaused}
           onPress={handlePress}
           onLongPress={handleLongPress}
         />

@@ -55,7 +55,7 @@ export const SmallCounterSettingsSheet: React.FC<
   const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
   const { data } = getWidgetData(projectId, widgetId);
 
-  const { left, right } = data;
+  const { left, right } = data as SmallCounter["data"];
 
   const onSaveClick = (val: { count: number; label: string }) => {
     saveWidgetData(projectId, widgetId, {
@@ -148,7 +148,7 @@ export const SmallCounterWidget: React.FC<
           onOuterPress={handleOuterPress}
         />
       </WidgetContainer>
-      {
+      {isOpen && (
         <SmallCounterSettingsSheet
           widgetId={widgetId}
           projectId={projectId}
@@ -156,7 +156,7 @@ export const SmallCounterWidget: React.FC<
           onClose={handleClose}
           dir={dir!}
         />
-      }
+      )}
     </>
   );
 };
@@ -237,17 +237,25 @@ const Widget: React.FC<SmallCounter["data"] & WidgetProps> = ({
             <Pressable
               onPress={() => onMinusPress("left")}
               onLongPress={onLongPress}
+              height="100%"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              w="1/3"
             >
               <Box>
                 <AntDesign name="minus" size={36} />
               </Box>
             </Pressable>
-            <Box maxW="1/3">
-              <Heading fontSize="3xl">{left.count}</Heading>
-            </Box>
+            <Box minW="1/3" />
             <Pressable
               onPress={() => onPlusPress("left")}
               onLongPress={onLongPress}
+              height="100%"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              w="1/3"
             >
               <Box>
                 <AntDesign name="plus" size={36} />
@@ -255,8 +263,11 @@ const Widget: React.FC<SmallCounter["data"] & WidgetProps> = ({
             </Pressable>
           </Box>
           <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
-            {left!.label}
+            {left.label}
           </Heading>
+          <Box position="absolute" overflow="visible" zIndex={-10}>
+            <Heading fontSize="3xl">{left.count}</Heading>
+          </Box>
         </Box>
       </Pressable>
       <Box w={4} />
@@ -291,17 +302,25 @@ const Widget: React.FC<SmallCounter["data"] & WidgetProps> = ({
             <Pressable
               onPress={() => onMinusPress("right")}
               onLongPress={onLongPress}
+              height="100%"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              w="1/3"
             >
               <Box>
                 <AntDesign name="minus" size={36} />
               </Box>
             </Pressable>
-            <Box maxW="1/3">
-              <Heading fontSize="3xl">{right.count}</Heading>
-            </Box>
+            <Box w="1/3" />
             <Pressable
               onPress={() => onPlusPress("right")}
               onLongPress={onLongPress}
+              height="100%"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              w="1/3"
             >
               <Box>
                 <AntDesign name="plus" size={36} />
@@ -311,6 +330,9 @@ const Widget: React.FC<SmallCounter["data"] & WidgetProps> = ({
           <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
             {right.label}
           </Heading>
+          <Box position="absolute" overflow="visible" zIndex={-10}>
+            <Heading fontSize="3xl">{right.count}</Heading>
+          </Box>
         </Box>
       </Pressable>
     </Box>

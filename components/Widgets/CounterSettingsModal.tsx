@@ -1,12 +1,4 @@
-import {
-    Box,
-    Button,
-    Flex,
-    FormControl,
-
-    Input,
-    Modal
-} from "native-base";
+import { Box, Button, Flex, FormControl, Input, Modal } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useKeyboardState } from "../../hooks/keyboard";
 import { WidgetItem } from "../../store";
@@ -23,12 +15,9 @@ export const CounterSettingsSheet: React.FC<{
   const [counterValue, setCounterValue] = useState(count);
 
   useEffect(() => {
-    setCounterLabel(label);
-  }, [label]);
-
-  useEffect(() => {
     setCounterValue(count);
-  }, [count]);
+    setCounterLabel(label);
+  }, [label, count]);
 
   const onSaveClick = () => {
     onSave({

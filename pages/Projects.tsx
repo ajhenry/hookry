@@ -5,7 +5,7 @@ import {
   ChevronRightIcon,
   Heading,
   Pressable,
-  Stack
+  ScrollView
 } from "native-base";
 import React, { useContext } from "react";
 import { ProjectLogo } from "../components/ProjectLogo";
@@ -24,6 +24,7 @@ const ProjectItem: React.FC<HomeProps & { project: Project }> = ({
           projectId: project.id,
         });
       }}
+      mt={4}
     >
       <Box
         display="flex"
@@ -118,7 +119,7 @@ const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
       safeAreaBottom
     >
       <Box flex="1" flexDir="column" width="100%">
-        <Stack space="4" mt="4">
+        <ScrollView mt="4">
           {getAllProjects().map((project) => (
             <ProjectItem
               project={project}
@@ -127,7 +128,7 @@ const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
               route={route}
             />
           ))}
-        </Stack>
+        </ScrollView>
       </Box>
       <Box flexDir="column" width="100%">
         <CreateProjectItem />

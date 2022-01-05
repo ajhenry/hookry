@@ -53,7 +53,6 @@ const WidgetContainer: React.FC<
         flexDir="column"
         w={width / size - 16}
         m={2}
-        ml={2}
         borderRadius="2xl"
       >
         {children}
