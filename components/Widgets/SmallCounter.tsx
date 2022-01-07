@@ -4,6 +4,7 @@ import React, { useContext, useState } from "react";
 import { Dimensions } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { useDelete } from "../../hooks/useDelete";
+import { usePress } from "../../hooks/usePress";
 import { ProjectContext, SmallCounter, WidgetItem } from "../../store";
 import { generateColorPalette } from "../../utils/colors";
 import { generateRandom } from "../../utils/random";
@@ -89,7 +90,7 @@ export const SmallCounterWidget: React.FC<
   const [dir, setDir] = useState<"left" | "right" | null>(null);
   const [showDelete, onDelete] = useDelete();
 
-  const { data } = getWidgetData(projectId, widgetId);
+  const { data } = getWidgetData(projectId, widgetId) as SmallCounter;
   const { left, right } = data;
 
   const handleMinusPress = (dir: "left" | "right") => {
@@ -114,6 +115,18 @@ export const SmallCounterWidget: React.FC<
     setDir(dir);
     onOpen();
   };
+
+  const handleDoublePress = (dir: "left" | "right") => {
+    saveWidgetData(projectId, widgetId, {
+      ...data,
+      [dir]: { ...data[dir], count: 0 },
+    });
+  };
+
+  const pressHandler = usePress({
+    onPress: handleOuterPress,
+    onDoublePress: handleDoublePress,
+  });
 
   const handleClose = () => {
     setDir(null);
@@ -145,7 +158,7 @@ export const SmallCounterWidget: React.FC<
           onLongPress={handleLongPress}
           onMinusPress={handleMinusPress}
           onPlusPress={handlePlusPress}
-          onOuterPress={handleOuterPress}
+          onOuterPress={pressHandler}
         />
       </WidgetContainer>
       {isOpen && (

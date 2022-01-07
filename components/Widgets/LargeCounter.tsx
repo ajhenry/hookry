@@ -3,6 +3,7 @@ import { Box, Flex, Heading, Pressable, useDisclose } from "native-base";
 import React, { useContext } from "react";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { useDelete } from "../../hooks/useDelete";
+import { usePress } from "../../hooks/usePress";
 import { LargeCounter, ProjectContext, WidgetItem } from "../../store";
 import { generateColorPalette } from "../../utils/colors";
 import { generateRandom } from "../../utils/random";
@@ -33,7 +34,7 @@ export const LargeCounterSettingsSheet: React.FC<
   LargeCounterWidgetProps & { isOpen: boolean; onClose: () => void }
 > = ({ projectId, widgetId, isOpen, onClose }) => {
   const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
-  const { data } = getWidgetData(projectId, widgetId);
+  const { data } = getWidgetData(projectId, widgetId) as LargeCounter;
   const { label, count } = data;
 
   const onSaveClick = (val: { count: number; label: string }) => {
@@ -94,7 +95,17 @@ export const LargeCounterWidget: React.FC<
     onOpen();
   };
 
-  const handleDoublePress = () => {};
+  const handleDoublePress = () => {
+    saveWidgetData(projectId, widgetId, {
+      ...data,
+      count: 0,
+    });
+  };
+
+  const pressHandler = usePress({
+    onPress: handlePress,
+    onDoublePress: handleDoublePress,
+  });
 
   const onPressDelete = () => {
     removeWidget(projectId, widgetId);
@@ -107,7 +118,7 @@ export const LargeCounterWidget: React.FC<
         drag={drag}
         isActive={isActive}
         showDelete={showDelete}
-        onPress={handlePress}
+        onPress={pressHandler}
         onLongPress={handleLongPress}
         onDeletePress={onPressDelete}
       >
@@ -116,7 +127,7 @@ export const LargeCounterWidget: React.FC<
           colors={colors}
           count={count}
           label={label}
-          onPress={handlePress}
+          onPress={pressHandler}
           onLongPress={handleLongPress}
           onMinusPress={handleMinusPress}
           onPlusPress={handlePlusPress}
@@ -140,7 +151,7 @@ export const LargeCounterLibraryItem = ({
   label,
   id,
   onPress,
-}: WidgetItem["data"] & WidgetLibraryBase) => {
+}: LargeCounter["data"] & WidgetLibraryBase) => {
   const noop = () => onPress();
 
   return (
