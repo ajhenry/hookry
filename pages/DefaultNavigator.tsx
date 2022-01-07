@@ -25,6 +25,7 @@ import { hotPatchVersion } from "../utils/constants";
 import Board from "./Board";
 import BoardSettingsPage from "./BoardSettings";
 import NewProject from "./NewProject";
+import ProjectDeveloperPage from "./ProjectDeveloper";
 import Projects from "./Projects";
 import SettingsPage from "./Settings";
 
@@ -39,6 +40,7 @@ type RootDrawerParamList = {
   Board: { projectId: string };
   Settings: undefined;
   BoardSettings: { projectId: string };
+  ProjectDeveloper: { projectId: string };
 };
 
 export type HomeProps = NativeStackScreenProps<RootDrawerParamList, "Home">;
@@ -46,6 +48,10 @@ export type BoardProps = NativeStackScreenProps<RootDrawerParamList, "Board">;
 export type BoardSettingsProps = NativeStackScreenProps<
   RootDrawerParamList,
   "BoardSettings"
+>;
+export type ProjectDeveloperProps = NativeStackScreenProps<
+  RootDrawerParamList,
+  "ProjectDeveloper"
 >;
 export type SettingsProps = NativeStackScreenProps<
   RootDrawerParamList,
@@ -159,6 +165,16 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
                   }}
                   iconName="setting"
                 />
+                <DrawerRoute
+                  label="Project Developer"
+                  isActive={currentRouteName === "ProjectDeveloper"}
+                  onPress={() => {
+                    props.navigation.navigate("ProjectDeveloper", {
+                      projectId,
+                    });
+                  }}
+                  iconName="rocket1"
+                />
               </VStack>
             </VStack>
           )}
@@ -239,6 +255,25 @@ const RootDrawer = ({ navigation }: any) => {
         <Drawer.Screen
           name="BoardSettings"
           component={BoardSettingsPage}
+          options={{
+            headerShadowVisible: false,
+            headerLeft: () => {
+              return (
+                <Pressable
+                  ml={4}
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.toggleDrawer())
+                  }
+                >
+                  <Ionicons name="menu-outline" size={32} />
+                </Pressable>
+              );
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="ProjectDeveloper"
+          component={ProjectDeveloperPage}
           options={{
             headerShadowVisible: false,
             headerLeft: () => {
