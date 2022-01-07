@@ -53,6 +53,7 @@ export const CounterSettingsSheet: React.FC<{
                 borderWidth={0}
                 fontSize="4xl"
                 keyboardType="numeric"
+                autoFocus
                 onChangeText={(text) => setCounterValue(text)}
                 autoCorrect={false}
                 placeholder={String(count)}
