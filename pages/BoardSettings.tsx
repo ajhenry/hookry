@@ -25,7 +25,11 @@ const BoardSettingsPage: React.FC<BoardSettingsProps> = ({
 
   return (
     <Flex {...theme.background} h="full">
-      <ProjectDetails projectDetails={projectDetails} onSave={onSave} />
+      <ProjectDetails
+        projectDetails={projectDetails}
+        onSave={onSave}
+        projectId={projectId}
+      />
     </Flex>
   );
 };

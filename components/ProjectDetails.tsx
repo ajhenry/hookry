@@ -22,9 +22,11 @@ import { ProjectLogo } from "./ProjectLogo";
 interface ProjectDetailsProps {
   projectDetails?: Project;
   onSave: (project: Project) => void;
+  projectId?: string;
 }
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({
+  projectId,
   projectDetails,
   onSave,
 }) => {
@@ -47,7 +49,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
     setProjectName(projectDetails?.name ?? undefined);
     setProjectDescription(projectDetails?.description ?? undefined);
     setProjectColor(projectDetails?.colors ?? generateColorPalette());
-  }, []);
+  }, [projectId]);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -60,13 +62,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
     if (!result.cancelled) {
       setProjectImage(result.uri);
-    }else{
-      toast.show({
-        title: "Photo Picker Error",
-        status: "error",
-        description: "Couldn't access your camera roll",
-        placement: "top",
-      });
     }
   };
 
