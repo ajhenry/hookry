@@ -13,6 +13,7 @@ import {
   ProjectContext,
   WidgetItem
 } from "./store";
+import { AppSettingsContext, initialAppSettings } from "./store/settings";
 
 Updates.releaseChannel;
 
@@ -29,25 +30,58 @@ const config = {
 export const theme = extendTheme({ config });
 
 export default function App() {
-  const [projectFromStorage, setProjectFromStorage] =
-    useState<ProjectContext | null>(null);
+  const [loading, setLoading] = useState(true);
   const [projectData, setProjectData] = useState(initialProjectData);
+  const [appSettings, setAppSettings] = useState(initialAppSettings);
 
   const getData = async () => {
     try {
       //await AsyncStorage.clear()
-      const value = await AsyncStorage.getItem("@storage_Key");
-      setProjectFromStorage(value ? JSON.parse(value) : initialProjectData);
+
+      // Read project data from storage
+      const storageProjectData = await AsyncStorage.getItem("@storage_Key");
+      setProjectData(
+        storageProjectData ? JSON.parse(storageProjectData) : initialProjectData
+      );
+
+      // Read project settings from storage
+      const storageAppSettings = await AsyncStorage.getItem(
+        "@hookry_app_settings"
+      );
+      setAppSettings(
+        storageAppSettings ? JSON.parse(storageAppSettings) : initialAppSettings
+      );
+
+      setLoading(false);
     } catch (e) {
       // error reading value
       console.error("There was a bad error reading data");
     }
   };
 
-  const storeData = async (value: ProjectContext) => {
+  const storeData = async ({
+    projectContext,
+    appSettingsContext,
+  }: {
+    projectContext?: ProjectContext;
+    appSettingsContext?: AppSettingsContext;
+  }) => {
     try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem("@storage_Key", jsonValue);
+      if (projectContext) {
+        const stringProjectContext = JSON.stringify(projectContext);
+        await AsyncStorage.setItem("@storage_Key", stringProjectContext);
+      }
+
+      if (appSettingsContext) {
+        const stringAppSettingsContext = JSON.stringify(appSettingsContext);
+        await AsyncStorage.setItem(
+          "@hookry_app_settings",
+          stringAppSettingsContext
+        );
+        const appSettingsValue = await AsyncStorage.getItem(
+          "@hookry_app_settings"
+        );
+      }
     } catch (e) {
       // saving error
       console.error("There was a bad error reading data");
@@ -59,16 +93,15 @@ export default function App() {
     getData();
   }, []);
 
-  // Let the app know we're ready to show data
   useEffect(() => {
-    if (!projectFromStorage) return;
-    setProjectData(projectFromStorage);
-  }, [projectFromStorage]);
+    if (loading || !projectData) return;
+    storeData({ projectContext: projectData });
+  }, [projectData]);
 
   useEffect(() => {
-    if (!projectData) return;
-    storeData(projectData);
-  }, [projectData]);
+    if (loading || !appSettings) return;
+    storeData({ appSettingsContext: appSettings });
+  }, [appSettings]);
 
   const getProject = (projectId: string) => projectData[projectId];
 
@@ -143,14 +176,29 @@ export default function App() {
     saveProject,
   };
 
+  function setDeveloperMode(mode: boolean) {
+    const newSettings = {
+      ...cloneDeep(appSettings),
+      developerModeEnabled: mode,
+    };
+    setAppSettings(newSettings);
+  }
+
+  const appSettingsContext = {
+    settings: appSettings,
+    setDeveloperMode,
+  };
+
   return (
     <SSRProvider>
       <NavigationContainer>
         <NativeBaseProvider config={config}>
-          <ProjectContext.Provider value={value}>
-            <StatusBar barStyle="dark-content" />
-            <DefaultNavigator />
-          </ProjectContext.Provider>
+          <AppSettingsContext.Provider value={appSettingsContext}>
+            <ProjectContext.Provider value={value}>
+              <StatusBar barStyle="dark-content" />
+              <DefaultNavigator />
+            </ProjectContext.Provider>
+          </AppSettingsContext.Provider>
         </NativeBaseProvider>
       </NavigationContainer>
     </SSRProvider>

@@ -15,4 +15,7 @@ export const theme = {
   header: {
     backgroundColor: "white",
   },
+  heading: {
+    color: "black",
+  },
 };
