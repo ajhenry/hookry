@@ -52,7 +52,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -60,6 +60,13 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
     if (!result.cancelled) {
       setProjectImage(result.uri);
+    }else{
+      toast.show({
+        title: "Photo Picker Error",
+        status: "error",
+        description: "Couldn't access your camera roll",
+        placement: "top",
+      });
     }
   };
 

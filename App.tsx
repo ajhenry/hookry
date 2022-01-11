@@ -29,14 +29,15 @@ const config = {
 export const theme = extendTheme({ config });
 
 export default function App() {
-  const [fromStorage, setFromStorage] = useState<ProjectContext | null>(null);
+  const [projectFromStorage, setProjectFromStorage] =
+    useState<ProjectContext | null>(null);
   const [projectData, setProjectData] = useState(initialProjectData);
 
   const getData = async () => {
     try {
       //await AsyncStorage.clear()
       const value = await AsyncStorage.getItem("@storage_Key");
-      setFromStorage(value ? JSON.parse(value) : initialProjectData);
+      setProjectFromStorage(value ? JSON.parse(value) : initialProjectData);
     } catch (e) {
       // error reading value
       console.error("There was a bad error reading data");
@@ -60,9 +61,9 @@ export default function App() {
 
   // Let the app know we're ready to show data
   useEffect(() => {
-    if (!fromStorage) return;
-    setProjectData(fromStorage);
-  }, [fromStorage]);
+    if (!projectFromStorage) return;
+    setProjectData(projectFromStorage);
+  }, [projectFromStorage]);
 
   useEffect(() => {
     if (!projectData) return;
