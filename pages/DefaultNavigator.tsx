@@ -25,9 +25,11 @@ import { hotPatchVersion } from "../utils/constants";
 import Board from "./Board";
 import BoardSettingsPage from "./BoardSettings";
 import NewProject from "./NewProject";
+import PrivacyPolicyPage from "./Privacy";
 import ProjectDeveloperPage from "./ProjectDeveloper";
 import Projects from "./Projects";
 import SettingsPage from "./Settings";
+import TermsOfServicePage from "./Terms";
 
 type RootStackParamList = {
   Root: undefined;
@@ -307,6 +309,8 @@ const DefaultNavigator = () => {
       />
       <Stack.Screen name="NewProject" component={NewProject} />
       <Stack.Screen name="Notes" component={NotesSettingsPage} />
+      <Stack.Screen name="Terms" component={TermsOfServicePage} />
+      <Stack.Screen name="Privacy" component={PrivacyPolicyPage} />
     </Stack.Navigator>
   );
 };

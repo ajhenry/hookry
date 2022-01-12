@@ -130,7 +130,7 @@ const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
           ))}
         </ScrollView>
       </Box>
-      <Box flexDir="column" width="100%">
+      <Box flexDir="column" width="100%" mt="4">
         <CreateProjectItem />
       </Box>
     </Box>

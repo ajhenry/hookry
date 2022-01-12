@@ -1,12 +1,15 @@
+import { useNavigation } from "@react-navigation/native";
 import {
   ChevronRightIcon,
   Heading,
   Pressable,
   ScrollView,
   Text,
+  useDisclose,
   VStack
 } from "native-base";
 import React, { useContext } from "react";
+import { DeleteModal } from "../components/DeleteModal";
 import { ProjectContext } from "../store";
 import { AppSettingsContext } from "../store/settings";
 import { theme } from "../utils/theme";
@@ -33,6 +36,7 @@ const SettingsPageRowItem: React.FC<SettingsRowItemProps> = ({
       flexDirection="row"
       justifyContent="space-between"
       onPress={onClick}
+      zIndex="10"
     >
       <Heading {...theme.heading}>{name}</Heading>
 
@@ -42,8 +46,10 @@ const SettingsPageRowItem: React.FC<SettingsRowItemProps> = ({
 };
 
 const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
+  const router = useNavigation();
   const { settings, setDeveloperMode } = useContext(AppSettingsContext);
   const { projectData } = useContext(ProjectContext);
+  const { onOpen, isOpen, onClose } = useDisclose();
 
   const { developerModeEnabled } = settings;
   return (
@@ -62,12 +68,16 @@ const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
       <VStack flex={1}>
         <SettingsPageRowItem
           name="Privacy Policy"
-          onClick={() => {}}
+          onClick={() => {
+            navigation.navigate("Privacy" as any);
+          }}
           type="link"
         />
         <SettingsPageRowItem
-          name="Terms & Service"
-          onClick={() => {}}
+          name="Delete All Data"
+          onClick={() => {
+            onOpen();
+          }}
           type="link"
         />
         <SettingsPageRowItem
@@ -96,6 +106,11 @@ const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
           </VStack>
         )}
       </VStack>
+      <DeleteModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={() => console.log("confirm")}
+      />
     </ScrollView>
   );
 };
