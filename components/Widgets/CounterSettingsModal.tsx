@@ -2,6 +2,7 @@ import { Box, Button, Flex, FormControl, Input, Modal } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useKeyboardState } from "../../hooks/keyboard";
 import { WidgetItem } from "../../store";
+import { theme } from "../../utils/theme";
 
 export const CounterSettingsSheet: React.FC<{
   isOpen: boolean;
@@ -34,17 +35,12 @@ export const CounterSettingsSheet: React.FC<{
       size="xl"
       paddingBottom={open ? 80 : 0}
     >
-      <Modal.Content bgColor="rgb(255, 255, 255)">
+      <Modal.Content {...theme.background}>
         <Modal.CloseButton />
         <Modal.Header borderBottomColor="transparent">
           Edit Counter
         </Modal.Header>
-        <Modal.Body
-          borderWidth={0}
-          bgColor="rgb(255, 255, 255)"
-          px="4"
-          minH="40"
-        >
+        <Modal.Body borderWidth={0} {...theme.background} px="4" minH="40">
           <FormControl mt="3">
             <Flex justifyContent="center" alignItems="center">
               <Input
@@ -54,7 +50,7 @@ export const CounterSettingsSheet: React.FC<{
                 fontSize="4xl"
                 keyboardType="numeric"
                 autoFocus
-                onChangeText={(text) => setCounterValue(text)}
+                onChangeText={(text) => setCounterValue(Number(text))}
                 autoCorrect={false}
                 placeholder={String(count)}
                 placeholderTextColor="black"
@@ -85,7 +81,7 @@ export const CounterSettingsSheet: React.FC<{
           </FormControl>
         </Modal.Body>
         <Modal.Footer
-          bgColor="rgb(255, 255, 255)"
+          {...theme.background}
           display="flex"
           justifyContent="center"
         >

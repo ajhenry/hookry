@@ -1,19 +1,13 @@
 import { useIsFocused } from "@react-navigation/native";
 import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  Heading,
-  Input,
-  Modal,
-  Pressable,
+  Box, Flex, Heading, Pressable,
   useDisclose
 } from "native-base";
 import React, { useContext, useEffect, useState } from "react";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { useDelete } from "../../hooks/useDelete";
 import { ProjectContext, Timer, WidgetItem } from "../../store";
+import { theme } from "../../utils/theme";
 import { secondsToTime } from "../../utils/time";
 import WidgetContainer from "../Widget";
 import { WidgetLibraryBase } from "../WidgetLibrary";
@@ -29,72 +23,6 @@ export const newTimerDefaults = {
 
 export const timerLibraryDefaults = {
   total: 123873,
-};
-
-export const TimerSettingsSheet: React.FC<
-  TimerWidgetProps & { isOpen: boolean; onClose: () => void }
-> = ({ projectId, widgetId, isOpen, onClose }) => {
-  const { saveWidgetData, getWidgetData } = useContext(ProjectContext);
-  const { data } = getWidgetData(projectId, widgetId);
-  const { total } = data as Timer["data"];
-  const [counterLabel, setCounterLabel] = useState(total);
-
-  useEffect(() => {
-    setCounterLabel(total);
-  }, [total]);
-
-  const onSaveClick = () => {
-    saveWidgetData(projectId, widgetId, {
-      ...data,
-      total: counterLabel,
-    });
-    onClose();
-  };
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} avoidKeyboard size="xl">
-      <Modal.Content bgColor="rgb(255, 255, 255)">
-        <Modal.CloseButton />
-        <Modal.Header borderBottomColor="transparent">Edit Timer</Modal.Header>
-        <Modal.Body
-          borderWidth={0}
-          bgColor="rgb(255, 255, 255)"
-          px="4"
-          minH="40"
-        >
-          <FormControl mt="3">
-            <FormControl.Label>Counter Label</FormControl.Label>
-            <Box
-              borderColor={"transparent"}
-              bgColor={"rgb(239,239,239)"}
-              borderRadius="2xl"
-              paddingX={2}
-            >
-              <Input
-                borderColor="transparent"
-                bgColor="transparent"
-                borderWidth={0}
-                fontSize="lg"
-                h={10}
-                onChangeText={(text) => {}}
-                autoCorrect={false}
-                value={String(counterLabel)}
-              />
-            </Box>
-          </FormControl>
-        </Modal.Body>
-        <Modal.Footer
-          bgColor="rgb(255, 255, 255)"
-          display="flex"
-          justifyContent="center"
-        >
-          <Button px="12" borderRadius="2xl" onPress={onSaveClick}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
-  );
 };
 
 export const TimerWidget: React.FC<
@@ -164,14 +92,6 @@ export const TimerWidget: React.FC<
           onLongPress={handleLongPress}
         />
       </WidgetContainer>
-      {
-        <TimerSettingsSheet
-          widgetId={widgetId}
-          projectId={projectId}
-          isOpen={isOpen}
-          onClose={onClose}
-        />
-      }
     </>
   );
 };
@@ -213,7 +133,10 @@ const Widget: React.FC<Timer["data"] & WidgetProps> = ({
         justifyContent="center"
         alignItems="center"
       >
-        <Heading mr={2} color={paused ? "rgba(0, 0, 0, 0.5)" : "black"}>
+        <Heading
+          mr={2}
+          color={paused ? "rgba(0, 0, 0, 0.5)" : theme.text.heading.color}
+        >
           {h > 0 && `${h} hrs`} {m} mins {s} secs
         </Heading>
       </Box>

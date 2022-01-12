@@ -1,17 +1,18 @@
 import { Box, Heading, Input } from "native-base";
 import React from "react";
+import { theme } from "../utils/theme";
 
 interface NewProjectDetailsProps {
-  onProjectNameChange: (text: string) => void
+  onProjectNameChange: (text: string) => void;
 }
 
 const NewProjectDetails: React.FC<NewProjectDetailsProps> = ({
-  onProjectNameChange
+  onProjectNameChange,
 }) => {
   return (
     <Box>
       <Box marginX={6} mt={4}>
-        <Heading fontSize="md" mb={2}>
+        <Heading fontSize="md" mb={2} {...theme.text.heading}>
           Project Name
         </Heading>
         <Box
@@ -31,9 +32,7 @@ const NewProjectDetails: React.FC<NewProjectDetailsProps> = ({
           />
         </Box>
       </Box>
-      <Box>
-
-      </Box>
+      <Box></Box>
     </Box>
   );
 };

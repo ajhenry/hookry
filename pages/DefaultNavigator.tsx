@@ -21,7 +21,7 @@ import {
 } from "native-base";
 import React from "react";
 import { NotesSettingsPage } from "../components/Widgets/Notes";
-import { hotPatchVersion } from "../utils/constants";
+import { hotPatchVersion } from "../generated/constants";
 import Board from "./Board";
 import BoardSettingsPage from "./BoardSettings";
 import NewProject from "./NewProject";

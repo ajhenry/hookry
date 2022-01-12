@@ -10,6 +10,7 @@ import {
 import React, { useContext } from "react";
 import { ProjectLogo } from "../components/ProjectLogo";
 import { Project, ProjectContext } from "../store";
+import { theme } from "../utils/theme";
 import { calculateTotalTime } from "../utils/time";
 import { HomeProps } from "./DefaultNavigator";
 
@@ -50,10 +51,10 @@ const ProjectItem: React.FC<HomeProps & { project: Project }> = ({
           />
         </Box>
         <Box display="flex" flexDirection="column" ml="4" flex="1">
-          <Heading fontSize="lg" fontWeight="bold" color="black">
+          <Heading fontSize="lg" fontWeight="bold" {...theme.text.heading}>
             {project.name}
           </Heading>
-          <Heading fontSize="md" fontWeight="semibold">
+          <Heading fontSize="md" fontWeight="semibold" {...theme.text.heading}>
             {calculateTotalTime(project)}
           </Heading>
         </Box>
@@ -91,7 +92,12 @@ const CreateProjectItem = () => {
         } as any
       }
     >
-      <Heading fontSize="lg" fontWeight="bold" color="black">
+      <Heading
+        fontSize="lg"
+        fontWeight="bold"
+        color="black"
+        {...theme.text.heading}
+      >
         Create a New Project
       </Heading>
     </Button>
@@ -115,8 +121,8 @@ const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
       flexDir="column"
       alignItems="center"
       justifyContent="center"
-      bgColor="rgb(255,255,255)"
       safeAreaBottom
+      {...theme.background}
     >
       <Box flex="1" flexDir="column" width="100%">
         <ScrollView mt="4">

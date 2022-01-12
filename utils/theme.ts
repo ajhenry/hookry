@@ -1,7 +1,7 @@
 export const theme = {
   text: {
     heading: {
-      color: "black",
+      color: "rgb(0,0,0)",
     },
   },
   input: {
@@ -10,12 +10,15 @@ export const theme = {
     color: "black",
   },
   background: {
-    backgroundColor: "white",
+    backgroundColor: "rgb(255,255,255)",
   },
   header: {
     backgroundColor: "white",
   },
   heading: {
     color: "black",
+  },
+  colors: {
+    danger: "rgb(243, 32, 19)",
   },
 };

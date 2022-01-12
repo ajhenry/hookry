@@ -7,6 +7,7 @@ import { useDelete } from "../../hooks/useDelete";
 import { LargeCounter, ProjectContext, WidgetItem } from "../../store";
 import { generateColorPalette } from "../../utils/colors";
 import { generateRandom } from "../../utils/random";
+import { theme } from "../../utils/theme";
 import WidgetContainer from "../Widget";
 import { WidgetLibraryBase } from "../WidgetLibrary";
 import { CounterSettingsSheet } from "./CounterSettingsModal";
@@ -240,11 +241,19 @@ const Widget: React.FC<LargeCounter["data"] & WidgetProps> = ({
             </Box>
           </Pressable>
         </Box>
-        <Heading fontSize="xl" position="absolute" bottom={0} mb={2}>
+        <Heading
+          fontSize="xl"
+          position="absolute"
+          bottom={0}
+          mb={2}
+          {...theme.text.heading}
+        >
           {label}
         </Heading>
         <Box position="absolute" overflow="visible" zIndex={-10}>
-          <Heading fontSize="5xl">{count}</Heading>
+          <Heading fontSize="5xl" {...theme.text.heading}>
+            {count}
+          </Heading>
         </Box>
       </Box>
     </Pressable>

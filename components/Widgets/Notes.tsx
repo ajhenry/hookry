@@ -15,6 +15,7 @@ import RenderHtml from "react-native-render-html";
 import { useDelete } from "../../hooks/useDelete";
 import { Notes, ProjectContext, WidgetItem } from "../../store";
 import { generateRandom } from "../../utils/random";
+import { theme } from "../../utils/theme";
 import WidgetContainer from "../Widget";
 import { WidgetLibraryBase } from "../WidgetLibrary";
 
@@ -201,7 +202,7 @@ const Widget: React.FC<Notes["data"] & WidgetProps> = ({
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress}>
       <Box p={2}>
-        <Heading>{title}</Heading>
+        <Heading {...theme.text.heading}>{title}</Heading>
         <RenderHtml contentWidth={width} source={source} />
       </Box>
     </Pressable>

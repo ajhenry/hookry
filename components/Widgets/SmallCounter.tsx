@@ -8,6 +8,7 @@ import { usePress } from "../../hooks/usePress";
 import { ProjectContext, SmallCounter, WidgetItem } from "../../store";
 import { generateColorPalette } from "../../utils/colors";
 import { generateRandom } from "../../utils/random";
+import { theme } from "../../utils/theme";
 import WidgetContainer from "../Widget";
 import { WidgetLibraryBase } from "../WidgetLibrary";
 import { CounterSettingsSheet } from "./CounterSettingsModal";
@@ -275,11 +276,19 @@ const Widget: React.FC<SmallCounter["data"] & WidgetProps> = ({
               </Box>
             </Pressable>
           </Box>
-          <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
+          <Heading
+            fontSize="md"
+            position="absolute"
+            bottom={0}
+            mb={2}
+            {...theme.text.heading}
+          >
             {left.label}
           </Heading>
           <Box position="absolute" overflow="visible" zIndex={-10}>
-            <Heading fontSize="3xl">{left.count}</Heading>
+            <Heading fontSize="3xl" {...theme.text.heading}>
+              {left.count}
+            </Heading>
           </Box>
         </Box>
       </Pressable>
@@ -340,11 +349,19 @@ const Widget: React.FC<SmallCounter["data"] & WidgetProps> = ({
               </Box>
             </Pressable>
           </Box>
-          <Heading fontSize="md" position="absolute" bottom={0} mb={2}>
+          <Heading
+            fontSize="md"
+            position="absolute"
+            bottom={0}
+            mb={2}
+            {...theme.text.heading}
+          >
             {right.label}
           </Heading>
           <Box position="absolute" overflow="visible" zIndex={-10}>
-            <Heading fontSize="3xl">{right.count}</Heading>
+            <Heading fontSize="3xl" {...theme.text.heading}>
+              {right.count}
+            </Heading>
           </Box>
         </Box>
       </Pressable>

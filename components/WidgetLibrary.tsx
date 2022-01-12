@@ -1,6 +1,7 @@
 import { Actionsheet, Box, Flex, Heading, ScrollView } from "native-base";
 import React from "react";
 import { WidgetItem } from "../store";
+import { theme } from "../utils/theme";
 import {
   largeCounterLibraryDefaults,
   LargeCounterLibraryItem
@@ -25,7 +26,12 @@ interface WidgetLibraryProps {
 const WidgetLibraryRowItem = ({ label, children }: any) => {
   return (
     <Flex w="full" mb="6">
-      <Heading mb="2" fontSize="xl" fontWeight="semibold">
+      <Heading
+        mb="2"
+        fontSize="xl"
+        fontWeight="semibold"
+        {...theme.text.heading}
+      >
         {label}
       </Heading>
       {children}
@@ -40,9 +46,9 @@ export const WidgetLibrary: React.FC<WidgetLibraryProps> = ({
 }) => {
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
-      <Actionsheet.Content bgColor="white">
+      <Actionsheet.Content {...theme.background}>
         <Box w="100%" h={60} px={4} justifyContent="center" alignItems="center">
-          <Heading>Widgets</Heading>
+          <Heading {...theme.text.heading}>Widgets</Heading>
         </Box>
 
         <ScrollView w="full">

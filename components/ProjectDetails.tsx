@@ -122,7 +122,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
             />
           </Pressable>
           <Box marginX={6} mt={4}>
-            <Heading fontSize="md" mb={2}>
+            <Heading fontSize="md" mb={2} {...theme.text.heading}>
               Project Name
             </Heading>
             <Box {...theme.input} borderRadius="2xl" paddingX={2}>
@@ -138,7 +138,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
               />
             </Box>
             <Box mt={4}>
-              <Heading fontSize="md" mb={2}>
+              <Heading fontSize="md" mb={2} {...theme.text.heading}>
                 Project Description (optional)
               </Heading>
               <Box {...theme.input} borderRadius="2xl" paddingX={2}>
@@ -200,7 +200,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
             } as any
           }
         >
-          <Heading fontSize="lg" fontWeight="bold" color="black">
+          <Heading fontSize="lg" fontWeight="bold" {...theme.text.heading}>
             {projectDetails ? "Save Project" : "Create Project"}
           </Heading>
         </Button>

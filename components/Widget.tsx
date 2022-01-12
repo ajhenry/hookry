@@ -4,6 +4,7 @@ import React from "react";
 import { Dimensions } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { WidgetItem } from "../store";
+import { theme } from "../utils/theme";
 
 export interface WidgetContainerProps {
   size: number;
@@ -40,7 +41,7 @@ const WidgetContainer: React.FC<
           <Box
             position="absolute"
             borderRadius="full"
-            bgColor="rgb(243, 32, 19)"
+            bgColor={theme.colors.danger}
             p={2}
             right={0}
           >

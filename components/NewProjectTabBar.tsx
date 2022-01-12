@@ -1,18 +1,19 @@
 import { Box, Heading } from "native-base";
 import * as React from "react";
 import {
-    Animated,
-    Easing,
-    I18nManager,
-    StyleProp,
-    ViewStyle
+  Animated,
+  Easing,
+  I18nManager,
+  StyleProp,
+  ViewStyle
 } from "react-native";
 import {
-    NavigationState,
-    Route,
-    SceneRendererProps,
-    TabBar as TabBarTV
+  NavigationState,
+  Route,
+  SceneRendererProps,
+  TabBar as TabBarTV
 } from "react-native-tab-view";
+import { theme } from "../utils/theme";
 
 export type GetTabWidth = (index: number) => number;
 
@@ -133,6 +134,7 @@ export const TabBar: React.FC<
       style={{ backgroundColor: "transparent" }}
       renderLabel={({ route, focused, color }) => (
         <Heading
+          {...theme.text.heading}
           fontSize="md"
           color={focused ? "rgb(0,0,0)" : "rgb(155,155,155)"}
         >
