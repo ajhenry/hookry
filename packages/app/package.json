@@ -16,6 +16,7 @@
     "build:prod": "./scripts/build-prod.sh && eas build --platform ios --profile production",
     "publish:dev": "./scripts/build-dev.sh && expo publish --release-channel dev",
     "publish:prod": "./scripts/build-prod.sh && expo publish --release-channel prod",
+    "submit": "eas submit",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
