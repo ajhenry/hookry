@@ -1,1 +1,1 @@
-export const hotPatchVersion = '4d311f1'
+export const hotPatchVersion = '2541117'
