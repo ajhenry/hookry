@@ -19,9 +19,10 @@ import {
   useColorMode,
   VStack
 } from "native-base";
-import React from "react";
+import React, { useContext } from "react";
 import { NotesSettingsPage } from "../components/Widgets/Notes";
 import { hotPatchVersion } from "../generated/constants";
+import { AppSettingsContext } from "../store/settings";
 import Board from "./Board";
 import BoardSettingsPage from "./BoardSettings";
 import NewProject from "./NewProject";
@@ -111,6 +112,8 @@ const DrawerRoute = ({ label, isActive, onPress, iconName }: any) => {
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const currentRouteName = props.state.routeNames[props.state.index];
+  const { settings } = useContext(AppSettingsContext);
+  const { developerModeEnabled } = settings;
 
   const { projectId } = (props.state.routes[props.state.index]
     ?.params as any) ?? { projectId: undefined };
@@ -167,16 +170,18 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
                   }}
                   iconName="setting"
                 />
-                <DrawerRoute
-                  label="Project Developer"
-                  isActive={currentRouteName === "ProjectDeveloper"}
-                  onPress={() => {
-                    props.navigation.navigate("ProjectDeveloper", {
-                      projectId,
-                    });
-                  }}
-                  iconName="rocket1"
-                />
+                {developerModeEnabled && (
+                  <DrawerRoute
+                    label="Project Developer"
+                    isActive={currentRouteName === "ProjectDeveloper"}
+                    onPress={() => {
+                      props.navigation.navigate("ProjectDeveloper", {
+                        projectId,
+                      });
+                    }}
+                    iconName="rocket1"
+                  />
+                )}
               </VStack>
             </VStack>
           )}

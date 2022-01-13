@@ -1,9 +1,12 @@
+import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import {
   Box,
   Button,
   ChevronRightIcon,
+  Flex,
   Heading,
+  HStack,
   Pressable,
   ScrollView
 } from "native-base";
@@ -112,6 +115,7 @@ const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
   }, [navigation]);
 
   const { getAllProjects } = useContext(ProjectContext);
+  const projects = getAllProjects();
 
   return (
     <Box
@@ -125,16 +129,41 @@ const Projects: React.FC<HomeProps> = ({ navigation, route }) => {
       {...theme.background}
     >
       <Box flex="1" flexDir="column" width="100%">
-        <ScrollView mt="4">
-          {getAllProjects().map((project) => (
-            <ProjectItem
-              project={project}
-              key={project.id}
-              navigation={navigation}
-              route={route}
-            />
-          ))}
-        </ScrollView>
+        {projects.length === 0 && (
+          <HStack
+            alignItems="center"
+            justifyContent="center"
+            h="full"
+            w="full"
+            flexDir="row"
+          >
+            <Flex w="1/2" alignItems="flex-end">
+              <Heading textAlign="right" {...theme.text.heading}>
+                Create a project
+              </Heading>
+            </Flex>
+            <Flex w={4} />
+            <Flex w="1/4">
+              <Feather
+                name="corner-right-down"
+                size={48}
+                {...theme.text.heading}
+              />
+            </Flex>
+          </HStack>
+        )}
+        {projects.length > 0 && (
+          <ScrollView mt="4">
+            {projects.map((project) => (
+              <ProjectItem
+                project={project}
+                key={project.id}
+                navigation={navigation}
+                route={route}
+              />
+            ))}
+          </ScrollView>
+        )}
       </Box>
       <Box flexDir="column" width="100%" mt="4">
         <CreateProjectItem />

@@ -25,7 +25,12 @@ export const DeleteModal: React.FC<{
           justifyContent="center"
           {...theme.background}
         >
-          <Button px="12" borderRadius="2xl" onPress={onConfirm}>
+          <Button
+            px="12"
+            borderRadius="2xl"
+            onPress={onConfirm}
+            bgColor={theme.colors.danger}
+          >
             Confirm
           </Button>
         </Modal.Footer>

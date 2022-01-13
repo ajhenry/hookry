@@ -78,6 +78,7 @@ export const ProjectContext = createContext<{
   setBoardWidgetList: (projectId: string, data: WidgetItem[]) => void;
   removeWidget: (projectId: string, widgetId: string) => void;
   saveProject: (projectId: string, data: Project) => void;
+  deleteAllProjects: () => void;
 }>({
   projectData: initialProjectData,
   getProject: (projectId: string) => ({} as Project),
@@ -94,6 +95,7 @@ export const ProjectContext = createContext<{
   setBoardWidgetList: (projectId: string, data: WidgetItem[]) => {},
   removeWidget: (projectId: string, widgetId: string) => ({}),
   saveProject: (projectId: string, data: Project) => ({}),
+  deleteAllProjects: () => {},
 });
 
 export const BoardContext = createContext<{

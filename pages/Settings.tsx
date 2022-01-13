@@ -48,8 +48,14 @@ const SettingsPageRowItem: React.FC<SettingsRowItemProps> = ({
 const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
   const router = useNavigation();
   const { settings, setDeveloperMode } = useContext(AppSettingsContext);
+  const { deleteAllProjects } = useContext(ProjectContext);
   const { projectData } = useContext(ProjectContext);
   const { onOpen, isOpen, onClose } = useDisclose();
+
+  const handleOnDeleteConfirm = () => {
+    deleteAllProjects();
+    onClose();
+  };
 
   const { developerModeEnabled } = settings;
   return (
@@ -109,7 +115,7 @@ const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
       <DeleteModal
         isOpen={isOpen}
         onClose={onClose}
-        onConfirm={() => console.log("confirm")}
+        onConfirm={handleOnDeleteConfirm}
       />
     </ScrollView>
   );

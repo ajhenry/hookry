@@ -143,6 +143,10 @@ export default function App() {
     setProjectData(newProjectData);
   }
 
+  function deleteAllProjects() {
+    setProjectData({});
+  }
+
   function addWidget(projectId: string, data: WidgetItem) {
     const newProjectData = cloneDeep(projectData);
     const updatedWidgetData = [...newProjectData[projectId].board.data, data];
@@ -174,6 +178,7 @@ export default function App() {
     setBoardWidgetList,
     removeWidget,
     saveProject,
+    deleteAllProjects,
   };
 
   function setDeveloperMode(mode: boolean) {
