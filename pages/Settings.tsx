@@ -55,6 +55,10 @@ const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
   const handleOnDeleteConfirm = () => {
     deleteAllProjects();
     onClose();
+    navigation.reset({
+      index: 0,
+      routes: [{ key: "Root", name: "Home" }],
+    });
   };
 
   const { developerModeEnabled } = settings;
