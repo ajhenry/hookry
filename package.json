@@ -1,0 +1,25 @@
+{
+  "name": "@hookry/base",
+  "version": "1.0.0",
+  "description": "Monorepo for the hookry app",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajhenry/hookry.git"
+  },
+  "author": "Andrew Henry",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/ajhenry/hookry/issues"
+  },
+  "homepage": "https://github.com/ajhenry/hookry#readme",
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}

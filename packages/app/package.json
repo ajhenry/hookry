@@ -1,7 +1,8 @@
 {
-  "name": "bean",
+  "name": "@hookry/app",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
+  "private": true,
   "keywords": [
     "react",
     "expo",
@@ -73,6 +74,5 @@
     "url": "https://github.com/GeekyAnts/nativebase-templates/issues"
   },
   "homepage": "https://github.com/GeekyAnts/nativebase-templates#readme",
-  "author": "Aditya Jamuar",
-  "private": true
+  "author": "Aditya Jamuar"
 }
