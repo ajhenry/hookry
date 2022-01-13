@@ -25,6 +25,7 @@ import { hotPatchVersion } from "../generated/constants";
 import { AppSettingsContext } from "../store/settings";
 import Board from "./Board";
 import BoardSettingsPage from "./BoardSettings";
+import DeveloperPage from "./Developer";
 import NewProject from "./NewProject";
 import PrivacyPolicyPage from "./Privacy";
 import ProjectDeveloperPage from "./ProjectDeveloper";
@@ -36,6 +37,8 @@ type RootStackParamList = {
   Root: undefined;
   NewProject: { projectId: string };
   Notes: { projectId: string; widgetId: string };
+  Terms: undefined;
+  Privacy: undefined;
 };
 
 type RootDrawerParamList = {
@@ -44,6 +47,7 @@ type RootDrawerParamList = {
   Settings: undefined;
   BoardSettings: { projectId: string };
   ProjectDeveloper: { projectId: string };
+  Developer: undefined;
 };
 
 export type HomeProps = NativeStackScreenProps<RootDrawerParamList, "Home">;
@@ -61,8 +65,8 @@ export type SettingsProps = NativeStackScreenProps<
   "Settings"
 >;
 
-const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 // Color Switch Component
 function ToggleDarkMode() {
@@ -141,6 +145,16 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
               }}
               iconName="setting"
             />
+            {developerModeEnabled && (
+              <DrawerRoute
+                label="Developer Page"
+                isActive={currentRouteName === "Developer"}
+                onPress={() => {
+                  props.navigation.navigate("Developer");
+                }}
+                iconName="rocket1"
+              />
+            )}
           </VStack>
           {isBoardPage && (
             <VStack space="5">
@@ -197,6 +211,20 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 }
 
 const RootDrawer = ({ navigation }: any) => {
+  const RootDrawerOptions = {
+    headerShadowVisible: false,
+    headerLeft: () => {
+      return (
+        <Pressable
+          ml={4}
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        >
+          <Ionicons name="menu-outline" size={32} />
+        </Pressable>
+      );
+    },
+  };
+
   return (
     <Box flex={1}>
       <Drawer.Navigator
@@ -205,97 +233,32 @@ const RootDrawer = ({ navigation }: any) => {
         <Drawer.Screen
           name="Home"
           component={Projects}
-          options={{
-            headerShadowVisible: false,
-            headerLeft: () => {
-              return (
-                <Pressable
-                  ml={4}
-                  onPress={() =>
-                    navigation.dispatch(DrawerActions.toggleDrawer())
-                  }
-                >
-                  <Ionicons name="menu-outline" size={32} />
-                </Pressable>
-              );
-            },
-          }}
+          options={RootDrawerOptions}
         />
         <Drawer.Screen
           name="Board"
           component={Board}
-          options={{
-            headerShadowVisible: false,
-            headerLeft: () => {
-              return (
-                <Pressable
-                  ml={4}
-                  onPress={() =>
-                    navigation.dispatch(DrawerActions.toggleDrawer())
-                  }
-                >
-                  <Ionicons name="menu-outline" size={32} />
-                </Pressable>
-              );
-            },
-          }}
+          options={RootDrawerOptions}
         />
         <Drawer.Screen
           name="Settings"
           component={SettingsPage}
-          options={{
-            headerShadowVisible: false,
-            headerLeft: () => {
-              return (
-                <Pressable
-                  ml={4}
-                  onPress={() =>
-                    navigation.dispatch(DrawerActions.toggleDrawer())
-                  }
-                >
-                  <Ionicons name="menu-outline" size={32} />
-                </Pressable>
-              );
-            },
-          }}
+          options={RootDrawerOptions}
         />
         <Drawer.Screen
           name="BoardSettings"
           component={BoardSettingsPage}
-          options={{
-            headerShadowVisible: false,
-            headerLeft: () => {
-              return (
-                <Pressable
-                  ml={4}
-                  onPress={() =>
-                    navigation.dispatch(DrawerActions.toggleDrawer())
-                  }
-                >
-                  <Ionicons name="menu-outline" size={32} />
-                </Pressable>
-              );
-            },
-          }}
+          options={RootDrawerOptions}
         />
         <Drawer.Screen
           name="ProjectDeveloper"
           component={ProjectDeveloperPage}
-          options={{
-            headerShadowVisible: false,
-            headerLeft: () => {
-              return (
-                <Pressable
-                  ml={4}
-                  onPress={() =>
-                    navigation.dispatch(DrawerActions.toggleDrawer())
-                  }
-                >
-                  <Ionicons name="menu-outline" size={32} />
-                </Pressable>
-              );
-            },
-          }}
+          options={RootDrawerOptions}
+        />
+        <Drawer.Screen
+          name="Developer"
+          component={DeveloperPage}
+          options={RootDrawerOptions}
         />
       </Drawer.Navigator>
     </Box>

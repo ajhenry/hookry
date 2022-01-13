@@ -1,11 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
 import {
   ChevronRightIcon,
-  Heading,
-  Pressable,
-  ScrollView,
-  Text,
-  useDisclose,
+  Heading, Pressable,
+  ScrollView, useDisclose,
   VStack
 } from "native-base";
 import React, { useContext } from "react";
@@ -46,10 +42,8 @@ const SettingsPageRowItem: React.FC<SettingsRowItemProps> = ({
 };
 
 const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
-  const router = useNavigation();
   const { settings, setDeveloperMode } = useContext(AppSettingsContext);
   const { deleteAllProjects } = useContext(ProjectContext);
-  const { projectData } = useContext(ProjectContext);
   const { onOpen, isOpen, onClose } = useDisclose();
 
   const handleOnDeleteConfirm = () => {
@@ -97,24 +91,6 @@ const SettingsPage: React.FC<SettingsProps> = ({ navigation, route }) => {
           }}
           type="checkbox"
         />
-
-        {developerModeEnabled && (
-          <VStack mt="12">
-            <Heading fontSize="lg" {...theme.heading}>
-              Stats for nerds
-            </Heading>
-            <Text w="full">
-              {JSON.stringify(
-                {
-                  appSettingsContext: settings,
-                  projectDataContext: projectData,
-                },
-                null,
-                2
-              )}
-            </Text>
-          </VStack>
-        )}
       </VStack>
       <DeleteModal
         isOpen={isOpen}

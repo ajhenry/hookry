@@ -11,6 +11,7 @@ import {
   initialProjectData,
   Project,
   ProjectContext,
+  ProjectContextMethods,
   WidgetItem
 } from "./store";
 import { AppSettingsContext, initialAppSettings } from "./store/settings";
@@ -166,7 +167,11 @@ export default function App() {
     setProjectData(newProjectData);
   }
 
-  const value = {
+  function uploadProjectData(context: ProjectContext) {
+    setProjectData(context);
+  }
+
+  const projectDataContext: ProjectContextMethods = {
     projectData,
     getProject,
     getWidgetList,
@@ -179,6 +184,7 @@ export default function App() {
     removeWidget,
     saveProject,
     deleteAllProjects,
+    uploadProjectData,
   };
 
   function setDeveloperMode(mode: boolean) {
@@ -199,7 +205,7 @@ export default function App() {
       <NavigationContainer>
         <NativeBaseProvider config={config}>
           <AppSettingsContext.Provider value={appSettingsContext}>
-            <ProjectContext.Provider value={value}>
+            <ProjectContext.Provider value={projectDataContext}>
               <StatusBar barStyle="dark-content" />
               <DefaultNavigator />
             </ProjectContext.Provider>
