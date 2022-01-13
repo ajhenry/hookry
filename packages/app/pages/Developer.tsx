@@ -1,16 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import Constants from "expo-constants";
+import * as Updates from "expo-updates";
 import {
-    Box,
-    Heading,
-    HStack,
-    Input,
-    Pressable,
-    ScrollView,
-    Text,
-    VStack
+  Box,
+  Heading,
+  HStack,
+  Input,
+  Pressable,
+  ScrollView,
+  Text,
+  VStack
 } from "native-base";
 import React, { useContext, useState } from "react";
+import { hotPatchVersion } from "../generated/constants";
 import { ProjectContext } from "../store";
 import { AppSettingsContext } from "../store/settings";
 import { theme } from "../utils/theme";
@@ -66,6 +69,28 @@ const DeveloperPage = ({ navigation }: any) => {
       >
         <VStack>
           <Box>
+            <Heading fontSize="lg" {...theme.heading}>
+              Version Information
+            </Heading>
+            <HStack>
+              <Text fontWeight="semibold">Version: </Text>
+              <Text>v{Constants.manifest?.version ?? "0.0.0"}</Text>
+            </HStack>
+            <HStack>
+              <Text fontWeight="semibold">Hot Patch: </Text>
+              <Text>{hotPatchVersion}</Text>
+            </HStack>
+            <HStack>
+              <Text fontWeight="semibold">Release Channel: </Text>
+              <Text>{Updates.releaseChannel}</Text>
+            </HStack>
+            <HStack>
+              <Text fontWeight="semibold">Channel: </Text>
+              <Text>{Updates.channel}</Text>
+            </HStack>
+          </Box>
+
+          <Box mt="4">
             <Heading fontSize="lg" {...theme.heading}>
               Overwrite Context Data
             </Heading>

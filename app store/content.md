@@ -11,7 +11,7 @@ Tailored row counting
 Customizable project boards to enhance crocheting and knitting tracking, completely tailored to your style.
 
 Features:
-- All features are included free — no ads or no purchases ever
+- All features are included free — no ads or no purchases
 - Project organization with completion tracking
 - 4 widgets including a large counter, small counter, timer, and notes
 

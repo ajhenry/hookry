@@ -1,13 +1,16 @@
 {
   "build": {
     "development": {
-      "developmentClient": true,
+      "releaseChannel": "dev",
       "distribution": "internal"
     },
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "releaseChannel": "prod",
+      "distribution": "store"
+    }
   },
   "cli": {
     "version": ">= 0.42.4"
