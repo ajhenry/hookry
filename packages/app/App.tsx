@@ -135,13 +135,11 @@ export default function App() {
     widgetId: string,
     data: WidgetItem["data"]
   ) {
-    const newProjectData = cloneDeep(projectData);
+    const newProjectData = projectData[projectId];
 
-    newProjectData[projectId].board.data.find(
-      ({ id }) => id === widgetId
-    )!.data = data;
+    newProjectData.board.data.find(({ id }) => id === widgetId)!.data = data;
 
-    setProjectData(newProjectData);
+    setProjectData({ ...projectData, ...{ [projectId]: newProjectData } });
   }
 
   function deleteAllProjects() {
@@ -171,6 +169,12 @@ export default function App() {
     setProjectData(context);
   }
 
+  function deleteProject(projectId: string) {
+    const newProjectData = cloneDeep(projectData);
+    delete newProjectData[projectId];
+    setProjectData(newProjectData);
+  }
+
   const projectDataContext: ProjectContextMethods = {
     projectData,
     getProject,
@@ -185,6 +189,7 @@ export default function App() {
     saveProject,
     deleteAllProjects,
     uploadProjectData,
+    deleteProject,
   };
 
   function setDeveloperMode(mode: boolean) {
